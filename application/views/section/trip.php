@@ -475,40 +475,40 @@ function stop_capture() {
 
 }
 
-function lockWeight(){
+// function lockWeight(){
 
-         jQuery.support.cors = true;
-  //  $('#saver').prop("disabled",true);
-     document.getElementById("weight").readOnly=true;
-          $.ajax({url: "http://127.0.0.1:8000/", success:
-                  function(result){
+//          jQuery.support.cors = true;
+//   //  $('#saver').prop("disabled",true);
+//      document.getElementById("weight").readOnly=true;
+//           $.ajax({url: "http://127.0.0.1:8000/", success:
+//                   function(result){
 
-if (parseInt(result) > 0){
-            /*var wt=result.split(':');
-           var wt2=wt[1].split('\r');
-              console.log(wt2);
-           //  alert(result);
-          //     $("#weight_com").val(result);
-            // $("#weight").html(result);
-           $("#weight_com").val(wt2[0]);*/
- // $('#saver').prop("disabled",false);
-    $('#lock_wt').prop("disabled",false);
-             $("#weight_1").html(result);
+// if (parseInt(result) > 0){
+//             /*var wt=result.split(':');
+//            var wt2=wt[1].split('\r');
+//               console.log(wt2);
+//            //  alert(result);
+//           //     $("#weight_com").val(result);
+//             // $("#weight").html(result);
+//            $("#weight_com").val(wt2[0]);*/
+//  // $('#saver').prop("disabled",false);
+//     $('#lock_wt').prop("disabled",false);
+//              $("#weight_1").html(result);
 
-    $("#weight_com2").val(result);
+//     $("#weight_com2").val(result);
 
-}
-              else if(parseInt(result)==0)
-                  {
+// }
+//               else if(parseInt(result)==0)
+//                   {
 
-                      $('#lock_wt').prop("disabled",false);
-               //   $('#saver').prop("disabled",true);
-               //    $("#weight_com").val("0");
-             $("#weight_1").html("0");
-              }
-  }});
+//                       $('#lock_wt').prop("disabled",false);
+//                //   $('#saver').prop("disabled",true);
+//                //    $("#weight_com").val("0");
+//              $("#weight_1").html("0");
+//               }
+//   }});
 
-}
+//}
     function getValue()
 {
 
