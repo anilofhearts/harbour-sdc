@@ -738,7 +738,8 @@ data = data+"&in_image="+encodeURI(url);
 
 $.post( "addUpdateTrip", data)
   .done(function( suc ) {
-  window.location.href= suc;
+  //window.location.href= suc;
+  console.log('Server response:', suc);
   });
   })
 }).catch(error => {
