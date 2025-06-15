@@ -732,7 +732,7 @@ fetch(remoteimageurl).then(res => {
  }).then(url => {
    console.log("Firebase storage image uploaded : ", url);
           var data = $("#tripForm").serialize();
-data = data+"&in_image="+url;
+data = data+"&in_image="+encodeURI(url);
       console.log(url);
       console.log(data);
 
