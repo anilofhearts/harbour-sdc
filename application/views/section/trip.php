@@ -280,7 +280,7 @@ document.getElementById("snap").setAttribute(
                             <input  type="hidden" id="weight_com2" name="weight2" />
                             <input  id="weight" name="weight" value="1234"/>
 
-                            <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue()">Lock Wt</button>
+                            <button type="button" id='lock_wt' class="btn btn-primary" >Lock Wt</button>
                         </div>
                     </div>
                     <?php echo form_close(); ?>
