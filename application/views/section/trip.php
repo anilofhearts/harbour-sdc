@@ -280,7 +280,7 @@ document.getElementById("snap").setAttribute(
                             <input  type="hidden" id="weight_com2" name="weight2" />
                             <input  id="weight" name="weight" readonly='readonly'/>
 
-                            <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue()">Lock Wt</button>
+                            <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue(1234)">Lock Wt</button>
                         </div>
                     </div>
                     <?php echo form_close(); ?>
@@ -524,20 +524,9 @@ function stop_capture() {
 //     $('#saver').prop("disabled", false);
 // }
 // Place this at the top of your <script> section
-var lockWeightInterval;
-
-$(document).ready(function(){
-    var screen = setInterval(bigImg,3000);
-    lockWeightInterval = setInterval(lockWeight,5000); // assign to global variable
-    $('#saver').prop("disabled",true);
-    $('#lock_wt').prop("disabled",true);
-    document.getElementById("weight").readOnly=true;
-});
-
-function getValue()
+function getValue(fixedValue)
 {
     clearInterval(lockWeightInterval); // Stop auto-refresh
-    var fixedValue = 1234; // Set your fixed value here
     document.getElementById("weight").readOnly = true;
     $("#weight").val(fixedValue);
     $("#weight_1").html(fixedValue); // Update the badge display
