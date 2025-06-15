@@ -278,7 +278,7 @@ document.getElementById("snap").setAttribute(
                         <div class="col-md-6 align-middle" style="text-align: center;"> <label id="wtlabel" style="font-size: 24px;">Gross Weight</label>
                             <h1><span id="weight_1" class="badge badge-pill badge-success weight">0</span></h1>
                             <input  type="hidden" id="weight_com2" name="weight2" />
-                            <input  id="weight" name="weight"/>
+                            <input  id="weight" name="weight" value="1234"/>
 
                             <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue()">Lock Wt</button>
                         </div>
