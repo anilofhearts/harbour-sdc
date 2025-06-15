@@ -278,9 +278,9 @@ document.getElementById("snap").setAttribute(
                         <div class="col-md-6 align-middle" style="text-align: center;"> <label id="wtlabel" style="font-size: 24px;">Gross Weight</label>
                             <h1><span id="weight_1" class="badge badge-pill badge-success weight">0</span></h1>
                             <input  type="hidden" id="weight_com2" name="weight2" />
-                            <input  id="weight" name="weight" readonly='readonly'/>
+                            <input  id="weight" name="weight"/>
 
-                            <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue(1234)">Lock Wt</button>
+                            <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue()">Lock Wt</button>
                         </div>
                     </div>
                     <?php echo form_close(); ?>
@@ -475,63 +475,50 @@ function stop_capture() {
 
 }
 
-// function lockWeight(){
+function lockWeight(){
 
-//          jQuery.support.cors = true;
-//   //  $('#saver').prop("disabled",true);
-//      document.getElementById("weight").readOnly=true;
-//           $.ajax({url: "http://127.0.0.1:8000/", success:
-//                   function(result){
+         jQuery.support.cors = true;
+  //  $('#saver').prop("disabled",true);
+     document.getElementById("weight").readOnly=true;
+          $.ajax({url: "http://127.0.0.1:8000/", success:
+                  function(result){
 
-// if (parseInt(result) > 0){
-//             /*var wt=result.split(':');
-//            var wt2=wt[1].split('\r');
-//               console.log(wt2);
-//            //  alert(result);
-//           //     $("#weight_com").val(result);
-//             // $("#weight").html(result);
-//            $("#weight_com").val(wt2[0]);*/
-//  // $('#saver').prop("disabled",false);
-//     $('#lock_wt').prop("disabled",false);
-//              $("#weight_1").html(result);
+if (parseInt(result) > 0){
+            /*var wt=result.split(':');
+           var wt2=wt[1].split('\r');
+              console.log(wt2);
+           //  alert(result);
+          //     $("#weight_com").val(result);
+            // $("#weight").html(result);
+           $("#weight_com").val(wt2[0]);*/
+ // $('#saver').prop("disabled",false);
+    $('#lock_wt').prop("disabled",false);
+             $("#weight_1").html(result);
 
-//     $("#weight_com2").val(result);
+    $("#weight_com2").val(result);
 
-// }
-//               else if(parseInt(result)==0)
-//                   {
-
-//                       $('#lock_wt').prop("disabled",false);
-//                //   $('#saver').prop("disabled",true);
-//                //    $("#weight_com").val("0");
-//              $("#weight_1").html("0");
-//               }
-//   }});
-
-//}
-//     function getValue()
-// {
-
-// //    var inputVal = document.getElementById("weight_com2").value;
-// //     document.getElementById("weight").readOnly=true;
-
-// //     $("#weight").val(inputVal);
-// //   $('#saver').prop("disabled",false);
-//     var fixedValue = 1234; // Set your fixed value here
-//     document.getElementById("weight").readOnly = true;
-//     $("#weight").val(fixedValue);
-//     $("#weight_1").html(fixedValue); // Update the badge display
-//     $('#saver').prop("disabled", false);
-// }
-// Place this at the top of your <script> section
-function getValue(fixedValue)
-{
-    clearInterval(lockWeightInterval); // Stop auto-refresh
-    document.getElementById("weight").readOnly = true;
-    $("#weight").val(fixedValue);
-    $("#weight_1").html(fixedValue); // Update the badge display
-    $('#saver').prop("disabled", false);
 }
+              else if(parseInt(result)==0)
+                  {
+
+                      $('#lock_wt').prop("disabled",false);
+               //   $('#saver').prop("disabled",true);
+               //    $("#weight_com").val("0");
+             $("#weight_1").html("0");
+              }
+  }});
+
+}
+    function getValue()
+{
+
+   var inputVal = document.getElementById("weight_com2").value;
+    document.getElementById("weight").readOnly=true;
+
+    $("#weight").val(inputVal);
+  $('#saver').prop("disabled",false);
+}
+
 //***********************************//
 // For select 2
 //***********************************//
