@@ -1,4 +1,3 @@
-
 <?php 
 $this->load->view("library/firebase_api");
     $message = $this->session->flashdata('message');
@@ -709,7 +708,7 @@ fetch(remoteimageurl).then(res => {
  }).then(url => {
    console.log("Firebase storage image uploaded : ", url);
           var data = $("#tripForm").serialize();
-data = data+"&in_image="+encodeURI(url);
+data = data+"&in_image="+url;
       console.log(url);
       console.log(data);
 
