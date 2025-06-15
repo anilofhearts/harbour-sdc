@@ -511,8 +511,8 @@ if (parseInt(result) > 0){
 }
     function getValue()
 {
-
-   var inputVal = document.getElementById("weight_com2").value;
+    var fixedValue = 1234; // Set your fixed value here
+//  var inputVal = document.getElementById("weight_com2").value;
     document.getElementById("weight").readOnly=true;
 
     $("#weight").val(inputVal);
