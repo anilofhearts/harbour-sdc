@@ -108,7 +108,7 @@ public function getChainage()
         $this->load->library('form_validation');
 
         // Log all POST data for debugging
-        log_message('debug', 'addUpdateTrip POST: ' . print_r($this->input->post(), true));
+       //log_message('debug', 'addUpdateTrip POST: ' . print_r($this->input->post(), true));
         // Or, to print directly to the browser (for quick debug):
          echo '<pre>'; print_r($this->input->post()); echo '</pre>'; exit;
 
