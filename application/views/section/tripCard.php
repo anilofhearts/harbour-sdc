@@ -116,7 +116,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3"></div>
-                            <img src="<?php echo $data['trip'][0]->in_image; ?>" width="240" height="160" >
+                            <img src="<?php echo urldecode($data['trip'][0]->in_image); ?>" width="240" height="160" >
                             
                         </div>
                         <div class="row">
