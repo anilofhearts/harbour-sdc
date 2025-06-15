@@ -150,7 +150,7 @@
                         </tr>
                         <tr>
                             <tr>
-                        <td colspan="2"> <img src="<?php echo urldecode($data['trip'][0]->in_image); ?>" width="240" height="160" ></td>
+                        <td colspan="2"> <img src="<?php echo $data['trip'][0]->in_image; ?>" width="240" height="160" ></td>
                         <td colspan="2"></td>
 
                         </tr>
