@@ -278,9 +278,9 @@ document.getElementById("snap").setAttribute(
                         <div class="col-md-6 align-middle" style="text-align: center;"> <label id="wtlabel" style="font-size: 24px;">Gross Weight</label>
                             <h1><span id="weight_1" class="badge badge-pill badge-success weight">0</span></h1>
                             <input  type="hidden" id="weight_com2" name="weight2" />
-                            <input  id="weight" name="weight" value="1234"/>
+                            <input  id="weight" name="weight" readonly='readonly'/>
 
-                            <button type="button" id='lock_wt' class="btn btn-primary" >Lock Wt</button>
+                            <button type="button" id='lock_wt' class="btn btn-primary" onclick="getValue()">Lock Wt</button>
                         </div>
                     </div>
                     <?php echo form_close(); ?>
@@ -717,7 +717,7 @@ $(document).ready( function () {
 
 
 
-var remoteimageurl = "http://127.0.0.1:8001/snapshot.jpg";
+var remoteimageurl = "/public/snapshots/snapshot.jpg";
 var filename ="site/"+<?php echo $x;?>+".jpg";
 
 fetch(remoteimageurl).then(res => {
