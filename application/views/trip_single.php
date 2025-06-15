@@ -72,10 +72,10 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="el-card-item">
-                    <div class="el-card-avatar el-overlay-1"> <img src="<?=$trip->in_image;?>" alt="IMAGE NOT AVAILABLE" style="height: 250px;" />
+                    <div class="el-card-avatar el-overlay-1"> <img src="<?=urldecode($trip->in_image);?>" alt="IMAGE NOT AVAILABLE" style="height: 250px;" />
                         <div class="el-overlay">
                             <ul class="list-style-none el-info">
-                                <li class="el-item"><a class="btn default btn-outline image-popup-vertical-fit el-link" href="<?=$trip->in_image;?>"><i class="mdi mdi-magnify-plus"></i></a></li>
+                                <li class="el-item"><a class="btn default btn-outline image-popup-vertical-fit el-link" href="<?=urldecode($trip->in_image);?>"><i class="mdi mdi-magnify-plus"></i></a></li>
                             </ul>
                         </div>
                     </div>
