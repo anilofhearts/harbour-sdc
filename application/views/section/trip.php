@@ -520,6 +520,7 @@ if (parseInt(result) > 0){
     var fixedValue = 1234; // Set your fixed value here
     document.getElementById("weight").readOnly = true;
     $("#weight").val(fixedValue);
+    $("#weight_1").html(fixedValue); // Update the badge display
     $('#saver').prop("disabled", false);
 }
 
