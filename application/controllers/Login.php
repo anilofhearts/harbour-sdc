@@ -17,7 +17,7 @@ class Login extends CI_Controller {
         [
             'expires' => time() + 3600,   // Cookie expiration time (1 hour from now)
             'path' => '/',                // Cookie path
-            'domain' => 'test.hedkerala.in',   // Domain for the cookie
+            'domain' => 'trips.hed.kerala.gov.in',   // Domain for the cookie
             'secure' => true,             // Set to true for HTTPS
             'httponly' => true,           // Prevent access via JavaScript
             'samesite' => 'Strict'        // Set the SameSite attribute
@@ -29,7 +29,7 @@ class Login extends CI_Controller {
         [
             'expires' => time() + 3600,   // Cookie expiration time (1 hour from now)
             'path' => '/',                // Cookie path
-            'domain' => 'test.hedkerala.in',   // Domain for the cookie
+            'domain' => 'trips.hed.kerala.gov.in',   // Domain for the cookie
             'secure' => true,             // Set to true for HTTPS
             'httponly' => true,           // Prevent access via JavaScript
             'samesite' => 'Strict'        // Set the SameSite attribute
