@@ -511,12 +511,16 @@ if (parseInt(result) > 0){
 }
     function getValue()
 {
-    var fixedValue = 1234; // Set your fixed value here
-//  var inputVal = document.getElementById("weight_com2").value;
-    document.getElementById("weight").readOnly=true;
 
-    $("#weight").val(inputVal);
-  $('#saver').prop("disabled",false);
+//    var inputVal = document.getElementById("weight_com2").value;
+//     document.getElementById("weight").readOnly=true;
+
+//     $("#weight").val(inputVal);
+//   $('#saver').prop("disabled",false);
+    var fixedValue = 1234; // Set your fixed value here
+    document.getElementById("weight").readOnly = true;
+    $("#weight").val(fixedValue);
+    $('#saver').prop("disabled", false);
 }
 
 //***********************************//
