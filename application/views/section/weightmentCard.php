@@ -132,7 +132,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                            <img src="<?php echo urldecode($data['trip'][0]->in_image); ?>" class="img-thumbnail img-responsive" >
+                            <img src="<?php echo $data['trip'][0]->in_image; ?>" class="img-thumbnail img-responsive" >
                                 </div>
                             <div class="col-md-6">
                                 <div class="custom">
