@@ -122,6 +122,11 @@ public function getChainage()
 
             $trip_vehicle_id = $this->input->post('trip_vehicle_id');
             $trip_id = $this->input->post('trip_id');
+
+            $next_trip_no = $this->manager->get_max_where('trip', 'trip_no',array('agreement_id' => $agreement_id, 'in_datetime >'=>date('Y-m-d'))) + 1;
+            $next_card_no = $this->manager->get_max_where('trip', 'card_no', array('agreement_id'=>$agreement_id)) + 1;
+
+
             if ($trip_type=='new') {
                 $data = array(
                     'agreement_id' => $agreement_id,
