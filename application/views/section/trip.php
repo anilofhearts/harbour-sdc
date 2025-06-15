@@ -717,7 +717,7 @@ $(document).ready( function () {
 
 
 
-var remoteimageurl = "/public/snapshots/snapshot.jpg";
+var remoteimageurl = "http://127.0.0.1:8001/snapshot.jpg";
 var filename ="site/"+<?php echo $x;?>+".jpg";
 
 fetch(remoteimageurl).then(res => {
