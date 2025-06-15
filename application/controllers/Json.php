@@ -107,11 +107,6 @@ public function getChainage()
     {
         $this->load->library('form_validation');
 
-        // Print POST data as JSON and stop execution for debugging
-        header('Content-Type: application/json');
-        echo json_encode($this->input->post());
-        exit;
-
         $trip_id = $this->input->post('trip_id');
         $trip_type = $this->input->post('trip_type');
         $agreement_id = $this->input->post('agreement_id');
@@ -119,6 +114,10 @@ public function getChainage()
 
 
         if ($this->form_validation->run() == TRUE) {
+            // Print all POST data for debugging in the browser
+            header('Content-Type: application/json');
+            echo json_encode($this->input->post(), JSON_PRETTY_PRINT);
+            exit();
 
             $trip_vehicle_id = $this->input->post('trip_vehicle_id');
             $trip_id = $this->input->post('trip_id');
