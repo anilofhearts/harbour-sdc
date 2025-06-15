@@ -1,6 +1,6 @@
 <?php
-error_reporting(0); // Suppress all PHP errors
-ini_set('display_errors', '0'); // Do not display errors
+error_reporting(-1); // Show all errors
+ini_set('display_errors', '1'); // Display errors
 /**
  * CodeIgniter
  *
@@ -54,10 +54,10 @@ ini_set('display_errors', '0'); // Do not display errors
  *     production
  *
  * NOTE: If you change these, also change the error_reporting() code below
- */
-//define('ENVIRONMENT', 'development');
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
 
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+*/
+define('ENVIRONMENT', 'development');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
