@@ -509,21 +509,40 @@ function stop_capture() {
 //   }});
 
 //}
-    function getValue()
+//     function getValue()
+// {
+
+// //    var inputVal = document.getElementById("weight_com2").value;
+// //     document.getElementById("weight").readOnly=true;
+
+// //     $("#weight").val(inputVal);
+// //   $('#saver').prop("disabled",false);
+//     var fixedValue = 1234; // Set your fixed value here
+//     document.getElementById("weight").readOnly = true;
+//     $("#weight").val(fixedValue);
+//     $("#weight_1").html(fixedValue); // Update the badge display
+//     $('#saver').prop("disabled", false);
+// }
+// Place this at the top of your <script> section
+var lockWeightInterval;
+
+$(document).ready(function(){
+    var screen = setInterval(bigImg,3000);
+    lockWeightInterval = setInterval(lockWeight,5000); // assign to global variable
+    $('#saver').prop("disabled",true);
+    $('#lock_wt').prop("disabled",true);
+    document.getElementById("weight").readOnly=true;
+});
+
+function getValue()
 {
-
-//    var inputVal = document.getElementById("weight_com2").value;
-//     document.getElementById("weight").readOnly=true;
-
-//     $("#weight").val(inputVal);
-//   $('#saver').prop("disabled",false);
+    clearInterval(lockWeightInterval); // Stop auto-refresh
     var fixedValue = 1234; // Set your fixed value here
     document.getElementById("weight").readOnly = true;
     $("#weight").val(fixedValue);
     $("#weight_1").html(fixedValue); // Update the badge display
     $('#saver').prop("disabled", false);
 }
-
 //***********************************//
 // For select 2
 //***********************************//
