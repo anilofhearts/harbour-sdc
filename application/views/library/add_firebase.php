@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
         var encodedURL = encodeURIComponent(downloadURL); // Encode during upload
         var data = <?php echo json_encode($_POST); ?>;
-        data.in_image = encodedURL;
+        data.in_image = downloadURL;
         console.log(data);
         $.post( "addUpdateTrip", data)
           .done(function( suc ) {

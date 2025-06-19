@@ -136,12 +136,12 @@ public function getChainage()
                     // 'trip_quarry_id' => $this->input->post('trip_quarry_id'),
                     'agreement_item_id' => $this->input->post('agreement_item_id'),
                     'in_weight' => $this->input->post('weight'),
-                    'in_image' => $this->input->post('in_image'),
+                    'in_image' => rawurlencode($this->input->post('in_image')),
                     'in_user_id' => $this->user['user_id']
                 );
 
-                 print_r($data);
-                 exit();
+                 //print_r($data);
+                 //exit();
                 // if ($trip_id > 0) {
                 //     $this->manager->log('Updating Trip in id-'.$trip_id, $data);
                 //     $q = $this->Manager->update_data('trip', $data, array('trip_id'=>$trip_id));
