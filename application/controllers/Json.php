@@ -140,8 +140,8 @@ public function getChainage()
                     'in_user_id' => $this->user['user_id']
                 );
 
-              //   print_r($data);
-                // exit();
+                 print_r($data);
+                 exit();
                 // if ($trip_id > 0) {
                 //     $this->manager->log('Updating Trip in id-'.$trip_id, $data);
                 //     $q = $this->Manager->update_data('trip', $data, array('trip_id'=>$trip_id));
