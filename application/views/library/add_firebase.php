@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
            
            //uploader.parentNode.removeChild(uploader);
   upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-var data = <?php echo $_POST; ?>;
+var data = <?php echo json_encode($_POST); ?>;
 data.in_image = downloadURL;
 console.log(data);
 $.post( "addUpdateTrip", data)
