@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     var storage = firebase.storage();
      var storageRef = firebase.storage().ref();
   
-  var thisRef = storageRef.child("site"+<?php echo $x;?>+".jpg");
+  var thisRef = storageRef.child("site/"+<?php echo $x;?>+".jpg");
       var upload = thisRef.putString(getBase64Image(document.getElementById("capture")),'base64');
 
   upload.on(
@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
            
            //uploader.parentNode.removeChild(uploader);
   upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-var data = <?php echo json_encode($_POST); ?>;
+var data = <?php echo $_POST; ?>;
 data.in_image = downloadURL;
 console.log(data);
 $.post( "addUpdateTrip", data)
