@@ -692,9 +692,7 @@ $(document).ready( function () {
     var trip_id = document.getElementById("trip_id").value;
 
    // var weight=document.getElementById("weight").value;
-   //var data = $("#tripForm").serialize();
-const formData = new FormData(document.getElementById("tripForm"));
-const data = Object.fromEntries(formData.entries());
+   var data = $("#tripForm").serialize();
 
     if(trip == '')
     {
@@ -738,24 +736,11 @@ data = data+"&in_image="+url;
       console.log(url);
       console.log(data);
 
-fetch("addUpdateTrip", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(data)
-})
-.then(res => res.text())  // you are returning text URLs like "tripCard/123"
-.then(suc => {
-  window.location.href = suc;
-})
-.catch(err => console.error("Upload error:", err));
-// $.post( "addUpdateTrip", data)
-//   .done(function( suc ) {
-//     // window.location.href= suc;
-//     //console.log('Server response:', suc);
-//     alert('Upload complete. Response: ' + suc); // Show response in alert for logging
-//   });
+$.post( "addUpdateTrip", data)
+  .done(function( suc ) {
+  window.location.href= suc;
+  //console.log('Server response:', suc);
+  });
   })
 }).catch(error => {
   console.error(error);

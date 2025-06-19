@@ -11,31 +11,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
      var storageRef = firebase.storage().ref();
   
   var thisRef = storageRef.child("site/"+<?php echo $x;?>+".jpg");
-  var upload = thisRef.putString(getBase64Image(document.getElementById("capture")),'base64');
+      var upload = thisRef.putString(getBase64Image(document.getElementById("capture")),'base64');
 
   upload.on(
-    "state_changed",
+          "state_changed",
     function progress(snapshot){
-      var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      uploader = document.getElementById("progress-bar");
-      uploader.style.width = percentage.toFixed(2)+'%';
-    },
-    function error() {
-      alert("error uploading file");
-    },
-    function complete(){
-      upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-        var encodedURL = encodeURIComponent(downloadURL); // Encode during upload
-        var data = <?php echo json_encode($_POST); ?>;
-        data.in_image = downloadURL;
-        console.log(data);
-        $.post( "addUpdateTrip", data)
-          .done(function( suc ) {
-            document.write(suc);
-          });
-        console.log('File available at', downloadURL);
-      });
-      console.log('Uploaded a blob or file!');
-    }
-  );
+    var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        uploader = document.getElementById("progress-bar");
+        uploader.style.width = percentage.toFixed(2)+'%';
+
+},
+ function error() {
+            alert("error uploading file");
+          },
+      
+       function complete(){
+           
+           //uploader.parentNode.removeChild(uploader);
+  upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+var data = <?php echo json_encode($_POST); ?>;
+data.in_image = downloadURL;
+console.log(data);
+$.post( "addUpdateTrip", data)
+  .done(function( suc ) {
+    document.write(suc);
+    //console.log('Server response:', suc);
+  });
+    console.log('File available at', downloadURL);
+  });
+    console.log('Uploaded a blob or file!');
+
+}); 
 
