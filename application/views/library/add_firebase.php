@@ -35,7 +35,6 @@ console.log(data);
 $.post( "addUpdateTrip", data)
   .done(function( suc ) {
     document.write(suc);
-    //console.log('Server response:', suc);
   });
     console.log('File available at', downloadURL);
   });
