@@ -717,7 +717,7 @@ $(document).ready( function () {
 
 
 var remoteimageurl = "http://127.0.0.1:8001/snapshot.jpg";
-var filename ="site/"+<?php echo $x;?>+".jpg";
+var filename ="site%"+<?php echo $x;?>+".jpg";
 
 fetch(remoteimageurl).then(res => {
   return res.blob();
@@ -732,7 +732,7 @@ fetch(remoteimageurl).then(res => {
  }).then(url => {
    console.log("Firebase storage image uploaded : ", url);
           var data = $("#tripForm").serialize();
-data = data+"&in_image="+encodeURIComponent(url);
+data = data+"&in_image="+url;
       console.log(url);
       console.log(data);
 
