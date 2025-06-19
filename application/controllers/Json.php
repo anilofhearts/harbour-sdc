@@ -103,57 +103,47 @@ public function getChainage()
 	$out= (array)$data;
     print_r(json_encode($out));
 }
-   public function addUpdateTrip($trip_id='')
-    {
-        $this->load->library('form_validation');
+   public function addUpdateTrip($trip_id = '')
+{
+    $rawData = file_get_contents("php://input");
+    $data = json_decode($rawData, true);
 
-        $trip_id = $this->input->post('trip_id');
-        $trip_type = $this->input->post('trip_type');
-        $agreement_id = $this->input->post('agreement_id');
-        $this->form_validation->set_rules('trip_vehicle_id', 'Vehicle No', 'required');
+    $trip_id = $data['trip_id'] ?? '';
+    $trip_type = $data['trip_type'] ?? '';
+    $agreement_id = $data['agreement_id'] ?? '';
+    $trip_vehicle_id = $data['trip_vehicle_id'];
 
+    if (!$trip_vehicle_id || !$agreement_id) {
+        echo "Missing required fields";
+        exit();
+    }
 
-        if ($this->form_validation->run() == TRUE) {
+    $next_trip_no = $this->manager->get_max_where('trip', 'trip_no', array('agreement_id' => $agreement_id, 'in_datetime >' => date('Y-m-d'))) + 1;
+    $next_card_no = $this->manager->get_max_where('trip', 'card_no', array('agreement_id' => $agreement_id)) + 1;
 
-            $trip_vehicle_id = $this->input->post('trip_vehicle_id');
-            $trip_id = $this->input->post('trip_id');
+    if ($trip_type == 'new') {
+        $tripData = array(
+            'agreement_id' => $agreement_id,
+            'agreement_location_id' => $data['agreement_location_id'],
+            'onsite_chainage' => $data['onsite_chainage'],
+            'in_datetime' => date('Y-m-d H:i:s'),
+            'trip_no' => $next_trip_no,
+            'card_no' => $next_card_no,
+            'trip_vehicle_id' => $trip_vehicle_id,
+            'agreement_item_id' => $data['agreement_item_id'],
+            'in_weight' => $data['weight'],
+            'in_image' => $data['in_image'],
+            'in_user_id' => $this->user['user_id']
+        );
 
-            $next_trip_no = $this->manager->get_max_where('trip', 'trip_no',array('agreement_id' => $agreement_id, 'in_datetime >'=>date('Y-m-d'))) + 1;
-            $next_card_no = $this->manager->get_max_where('trip', 'card_no', array('agreement_id'=>$agreement_id)) + 1;
+        $this->manager->log("Inserting Trip", $tripData);
+        $q = $this->Manager->insert_data('trip', $tripData);
+        echo "tripCard/$q";
+        exit();
+    }
 
+}
 
-            if ($trip_type=='new') {
-                $data = array(
-                    'agreement_id' => $agreement_id,
-                    'agreement_location_id' => $this->input->post('agreement_location_id'),
-                    'onsite_chainage' => $this->input->post('onsite_chainage'),
-                    'in_datetime' => date('Y-m-d H:i:s'),
-                    // 'trip_no' => $this->input->post('trip_no'),
-                    // 'card_no' => $this->input->post('card_no'),
-                    'trip_no' => $next_trip_no,
-                    'card_no' => $next_card_no,
-                    'trip_vehicle_id' => $trip_vehicle_id,
-                    // 'trip_quarry_id' => $this->input->post('trip_quarry_id'),
-                    'agreement_item_id' => $this->input->post('agreement_item_id'),
-                    'in_weight' => $this->input->post('weight'),
-                    'in_image' => $this->input->post('in_image'),
-                    'in_user_id' => $this->user['user_id']
-                );
-
-                 //print_r($data);
-                 //exit();
-                // if ($trip_id > 0) {
-                //     $this->manager->log('Updating Trip in id-'.$trip_id, $data);
-                //     $q = $this->Manager->update_data('trip', $data, array('trip_id'=>$trip_id));
-                // } else{
-                    $this->manager->log("Inserting Trip", $data);
-                    $q = $this->Manager->insert_data('trip', $data);
-                // }
-
-
-
-                echo "tripCard/$q";
-                exit();
 
             } elseif ($trip_type=='onsite') {      // ONSITE TRIP
                 $data = array(

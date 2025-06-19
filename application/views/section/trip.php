@@ -729,19 +729,49 @@ fetch(remoteimageurl).then(res => {
         uploader.style.width = percentage.toFixed(2)+'%';
         uploader.innerHTML = percentage.toFixed(2)+'%';
     return snapshot.ref.getDownloadURL()
- }).then(url => {
-   console.log("Firebase storage image uploaded : ", url);
-          var data = $("#tripForm").serialize();
-data = data+"&in_image="+url;
-      console.log(url);
-      console.log(data);
+ })
+ //Old Line
+//  .then(url => {
+//    console.log("Firebase storage image uploaded : ", url);
+//           var data = $("#tripForm").serialize();
+// data = data+"&in_image="+url;
+//       console.log(url);
+//       console.log(data);
 
-$.post( "addUpdateTrip", data)
-  .done(function( suc ) {
-  window.location.href= suc;
-  //console.log('Server response:', suc);
-  });
+// $.post( "addUpdateTrip", data)
+//   .done(function( suc ) {
+//   window.location.href= suc;
+//   //console.log('Server response:', suc);
+//   });
+//   })
+.then(url => {
+  console.log("Firebase storage image uploaded:", url);
+
+  // Properly encode the object path part (optional but safer)
+  const encodedUrl = url.replace(/\//g, encodeURIComponent("/"));
+
+  // Collect form data manually
+  const form = document.getElementById("tripForm");
+  const formData = new FormData(form);
+  const dataObj = Object.fromEntries(formData.entries());
+
+  // Add image URL properly
+  dataObj.in_image = encodedUrl;
+
+  fetch("addUpdateTrip", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(dataObj)
   })
+    .then(res => res.text())
+    .then(suc => {
+      window.location.href = suc;
+    })
+    .catch(error => console.error("Upload error:", error));
+})
+
 }).catch(error => {
   console.error(error);
 });
