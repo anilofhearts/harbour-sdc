@@ -23,15 +23,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-if($_SERVER['HTTP_HOST'] == "localhost")
+/*if($_SERVER['HTTP_HOST'] == "localhost")
 {
 $base  = "http://".$_SERVER['HTTP_HOST'];
 }else
 {
-$base  = "https://".$_SERVER['HTTP_HOST'];
+$base  = "http://".$_SERVER['HTTP_HOST'];
 }
 $base .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
-$config['base_url'] = $base;
+$config['base_url'] = $base;*/
+//if($_SERVER['HTTP_HOST'] == "localhost")
+//{
+//$base  = "http://".$_SERVER['HTTP_HOST'];
+//}else
+//{
+//$base  = "http://".$_SERVER['HTTP_HOST'];
+//}
+//$base .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
+//$config['base_url'] = "http://test.hedkerala.in/";
+$config['base_url'] = "https://trips.hed.kerala.gov.in/";
 date_default_timezone_set('Asia/Kolkata');
 
 /*
@@ -109,7 +119,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -232,7 +242,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 4;
 
 /*
 |--------------------------------------------------------------------------
@@ -257,7 +267,7 @@ $config['log_path'] = '';
 | Note: Leaving it blank will default to 'php'.
 |
 */
-$config['log_file_extension'] = '';
+$config['log_file_extension'] = 'php';
 
 /*
 |--------------------------------------------------------------------------
@@ -385,16 +395,22 @@ $config['encryption_key'] = '';
 | Other session cookie settings are shared with the rest of the application,
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
-*/
+
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = sys_get_temp_dir();
-$config['sess_match_ip'] = FALSE;
+$config['sess_match_ip'] = TRUE;
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+$config['sess_regenerate_destroy'] = TRUE;
+$config['cookie_prefix']    = '';
+$config['cookie_domain']    = '';
+$config['cookie_path']      = '/';
+$config['cookie_secure']    = TRUE;  // Set to TRUE if you're using HTTPS
+$config['cookie_httponly']  = TRUE;  // Recommended to mitigate XSS attacks
+$config['cookie_samesite']  = 'Lax'; // Options: 'Lax', 'Strict', 'None'
 
-/*
+
 |--------------------------------------------------------------------------
 | Cookie Related Variables
 |--------------------------------------------------------------------------
@@ -409,12 +425,17 @@ $config['sess_regenerate_destroy'] = FALSE;
 |       'cookie_httponly') will also affect sessions.
 |
 */
+$config['sess_time_to_update'] = 300;
+$config['sess_regenerate_destroy'] = TRUE;
+$config['sess_match_ip'] = TRUE;
+$config['sess_expiration'] = 7200;
+$config['sess_cookie_name'] = 'ci_session';
 $config['cookie_prefix']	= '';
-$config['cookie_domain']	= '';
+$config['cookie_domain'] = '';
 $config['cookie_path']		= '/';
-$config['cookie_secure']	= FALSE;
+$config['cookie_secure']	= TRUE;
 $config['cookie_httponly'] 	= FALSE;
-
+$config['cookie_samesite']  = 'Strict'; // Options: 'Lax', 'Strict', 'None'
 /*
 |--------------------------------------------------------------------------
 | Standardize newlines
@@ -441,7 +462,7 @@ $config['standardize_newlines'] = FALSE;
 |          for backwards compatibility purposes!
 |
 */
-$config['global_xss_filtering'] = FALSE;
+$config['global_xss_filtering'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -458,12 +479,15 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
 $config['csrf_protection'] = FALSE;
-$config['csrf_token_name'] = 'csrf_test_name';
-$config['csrf_cookie_name'] = 'csrf_cookie_name';
+$config['csrf_token_name'] = 'ci_csrf_token';
+$config['csrf_cookie_name'] = 'ci_csrf_cookie';
 $config['csrf_expire'] = 7200;
-$config['csrf_regenerate'] = TRUE;
+$config['csrf_regenerate'] = FALSE;
 $config['csrf_exclude_uris'] = array();
-
+$config['sess_driver'] = 'files';
+$config['sess_save_path'] = '/var/lib/php/sessions';
+$config['csrf_same_site'] = 'Strict'; // Options: Lax, Strict, None
+// $config['cookie_samesite']  = 'Lax';
 /*
 |--------------------------------------------------------------------------
 | Output Compression
