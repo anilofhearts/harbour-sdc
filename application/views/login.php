@@ -63,7 +63,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="auth-box bg-dark border-top border-secondary">
                 <div id="loginform">
                     <div class="text-center p-t-20 p-b-20">
-                        <span style="color:whitesmoke; font-size:20px;"><i class="ti-anchor"></i> Harbour Engineering(DEV)</span>
+                        <span style="color:whitesmoke; font-size:20px;"><i class="ti-anchor"></i> TRiPS </span>
                     </div>
                     <?php
                         if($this->session->flashdata('status')) {
