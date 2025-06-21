@@ -107,8 +107,8 @@ $route['addUpdateTrip'] = 'json/addUpdateTrip';
 $route['weightmentCard/(:num)'] = 'cards/weightmentCard/$1';
 $route['tripCard/(:num)'] = 'cards/tripCard/$1';
 
- $route['report'] = 'section/report';
- $route['generate_report'] = 'section/generate_report';
+// $route['report'] = 'section/report';
+// $route['generate_report'] = 'section/generate_report';
 $route['posttriping'] = 'section/posttriping';
 
 //$route['agreementForm'] = 'section/agreementForm';

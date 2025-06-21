@@ -441,11 +441,16 @@ class Section extends MY_Controller {
         $this->form_validation->set_rules('rc_owner', 'RC Owner', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
 
         $dashboard = html_escape($this->input->post('dashboard', TRUE));
+        $vehicle_id = html_escape($this->input->post('vehicle_id', TRUE));
 
         if ($this->form_validation->run() == TRUE) {
-
             $vehicle_no = html_escape($this->input->post('vehicle_no', TRUE));
-            $checkVehicle = $this->manager->get_details('vehicle', array('vehicle_agreement_id' => $agreement[0]->agreement_id, 'vehicle_no' => $vehicle_no));
+            // Exclude current vehicle from duplicate check when updating
+            $checkVehicleWhere = array('vehicle_agreement_id' => $agreement[0]->agreement_id, 'vehicle_no' => $vehicle_no);
+            if ($vehicle_id) {
+                $checkVehicleWhere['vehicle_id !='] = $vehicle_id;
+            }
+            $checkVehicle = $this->manager->get_details('vehicle', $checkVehicleWhere);
 
             if ($checkVehicle) {
                 $this->session->set_flashdata('message', 'Vehicle already exists. Please try another.');
@@ -456,8 +461,6 @@ class Section extends MY_Controller {
                     $this->vehicle();
                 }
             } else {
-
-                $vehicle_id = html_escape($this->input->post('vehicle_id', TRUE));
                 $data = array(
                     'vehicle_agreement_id' => html_escape($agreement[0]->agreement_id),
                     'vehicle_no' => $vehicle_no,
