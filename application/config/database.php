@@ -75,7 +75,8 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	 'hostname' => '10.5.95.77',
+//	'hostname' => '10.5.95.77',
+	'hostname' => 'db.hedkerala.in',	
 	'username' => 'demo',
 	'password' => 'Alpha@123',
 	//'hostname' => '127.0.0.1',
