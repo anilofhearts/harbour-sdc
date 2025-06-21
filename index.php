@@ -1,6 +1,6 @@
 <?php
-//error_reporting(-1); // Show all errors
-//ini_set('display_errors', '1'); // Display errors
+error_reporting(-1); // Show all errors
+ini_set('display_errors', '1'); // Display errors
 /**
  * CodeIgniter
  *
@@ -57,7 +57,7 @@
 
 	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
 */
-define('ENVIRONMENT', 'production');
+define('ENVIRONMENT', 'development');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
