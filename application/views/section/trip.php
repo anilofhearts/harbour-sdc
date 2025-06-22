@@ -778,4 +778,27 @@ var realData = block[1].split(",")[1];
                       //console.log(dataURL);
 }
 </script>
+<script>
+// CSRF helpers for AJAX
+function getCsrfToken() {
+    var name = document.querySelector('meta[name="csrf-token-name"]').getAttribute('content');
+    var hash = document.querySelector('meta[name="csrf-token-hash"]').getAttribute('content');
+    var obj = {};
+    obj[name] = hash;
+    return obj;
+}
+function appendCsrfToData(data) {
+    var csrf = getCsrfToken();
+    if (typeof data === 'string') {
+        var key = Object.keys(csrf)[0];
+        var val = csrf[key];
+        if (data.length > 0) data += '&';
+        data += encodeURIComponent(key) + '=' + encodeURIComponent(val);
+        return data;
+    } else if (typeof data === 'object') {
+        return Object.assign({}, data, csrf);
+    }
+    return data;
+}
+</script>
 <script src="<?=base_url()?>public/latestweight/files/main.js"></script>
