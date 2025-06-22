@@ -64,8 +64,8 @@
                             'placeholder' => 'Enter Item No', 
                             'required'=>'required', 
                             'class'=>'form-control',
-                            'pattern'=>'^[a-zA-Z0-9]+$', // Alphanumeric only, no spaces
-                            'title'=>'Item No must be alphanumeric with no spaces.'
+                            'pattern'=>'^[0-9]+(\\.[0-9]+)?$', // Decimal allowed
+                            'title'=>'Item No must be a number (decimals allowed).'
                         )); ?>
                         <?php echo form_error('item_no', '<p class="text-danger">', '</p>'); ?>
                     </div>
@@ -78,8 +78,8 @@
                             'placeholder' => 'Enter Item Name', 
                             'required'=>'required', 
                             'class'=>'form-control',
-                            'pattern'=>'^[a-zA-Z0-9]+$', // Alphanumeric only, no spaces
-                            'title'=>'Item Name must be alphanumeric with no spaces.'
+                            'pattern'=>'^[A-Za-z0-9\- ]+$', // Alphanumeric, hyphens, spaces allowed
+                            'title'=>'Item Name can include letters, numbers, hyphens, and spaces.'
                         )); ?>
                         <?php echo form_error('item_name', '<p class="text-danger">', '</p>'); ?>
                     </div>
@@ -187,13 +187,6 @@
             ordering: true,
             paging: true,
             search: true
-        });
-
-        // Prevent spaces in fields
-        $('input[name="item_no"], input[name="item_name"], input[name="unit"]').on('keypress', function(e) {
-            if(e.which === 32) {
-                return false;
-            }
         });
     });
     function doConfirm() {
