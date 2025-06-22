@@ -156,24 +156,9 @@ class Section extends MY_Controller {
         ]);
         $this->load->view('footer');
     }
-
-    public function agreementForm($agreement_id = '')
+    public function agreementForm($agreement_id='')
     {
-        log_message('debug', 'CSRF Token Generated: ' . $this->security->get_csrf_hash());
-        log_message('debug', 'CSRF Token from Cookie: ' . $this->input->cookie($this->config->item('csrf_cookie_name')));
-        log_message('debug', 'CSRF Token from POST: ' . $this->input->post($this->security->get_csrf_token_name()));
-        $agreement_id = html_escape($agreement_id); // Sanitize the input
-        if (empty($agreement_id) || !is_numeric($agreement_id)) {
-            log_message('error', 'Invalid ID: ' . $agreement_id);
-            redirect('errorHandler/error_404'); // Redirect to custom error page
-            return;
-        }
-            if (!$this->input->post($this->security->get_csrf_token_name())) {
-                log_message('error', 'CSRF validation failed.');
-                redirect('errorHandler/error_403'); // Redirect to custom error page
-                return;
-             }
-        $editAgre = $this->manager->get_details('agreement', array('agreement_id' => $agreement_id));
+        $editAgre = $this->manager->get_details('agreement', array('agreement_id'=>$agreement_id));
 
         $dept = array(
             '' => '-- Select Dept --',
@@ -181,26 +166,67 @@ class Section extends MY_Controller {
             'KIFFB' => 'KIFFB',
             'KSCADC' => 'KSCADC',
             'Tourism' => 'Tourism',
-            'Fisheries' => 'Fisheries'
-        );
+            'Fisheries' => 'Fisheries',
+            );
 
         $data = array(
-            'loc' => $this->manager->get_details('agreement_location', array('agreement_id' => $agreement_id)),
-            'item' => $this->manager->get_details('agreement_item', array('agreement_id' => $agreement_id)),
+            'loc' => $this->manager->get_details('agreement_location', array('agreement_id'=>$agreement_id)),
+            'item' => $this->manager->get_details('agreement_item', array('agreement_id'=>$agreement_id)),
             'dept' => $dept
         );
-
+        //$editLoc = $this->manager->get_details('agreement_location', array('agreement_id'=>$agreement_id));
+        
         $circle = $this->manager->get_details('circle', array());
         $type_of_work = $this->manager->get_distinct('work', 'work_type');
 
-        $this->load->view('section/agreementForm', [
-            'data' => $data,
-            'circle' => $circle,
-            'type_of_work' => $type_of_work,
-            'editAgre' => $editAgre
-        ]);
+        $this->load->view('section/agreementForm', ['data'=>$data, 'circle'=>$circle, 'type_of_work'=>$type_of_work, 'editAgre'=>$editAgre]);
         $this->load->view('footer');
     }
+// New with CSRF 
+    // public function agreementForm($agreement_id = '')
+    // {
+    //     log_message('debug', 'CSRF Token Generated: ' . $this->security->get_csrf_hash());
+    //     log_message('debug', 'CSRF Token from Cookie: ' . $this->input->cookie($this->config->item('csrf_cookie_name')));
+    //     log_message('debug', 'CSRF Token from POST: ' . $this->input->post($this->security->get_csrf_token_name()));
+    //     $agreement_id = html_escape($agreement_id); // Sanitize the input
+    //     if (empty($agreement_id) || !is_numeric($agreement_id)) {
+    //         log_message('error', 'Invalid ID: ' . $agreement_id);
+    //         redirect('errorHandler/error_404'); // Redirect to custom error page
+    //         return;
+    //     }
+    //         if (!$this->input->post($this->security->get_csrf_token_name())) {
+    //             log_message('error', 'CSRF validation failed.');
+    //             redirect('errorHandler/error_403'); // Redirect to custom error page
+    //             return;
+    //          }
+    //     $editAgre = $this->manager->get_details('agreement', array('agreement_id' => $agreement_id));
+
+    //     $dept = array(
+    //         '' => '-- Select Dept --',
+    //         'CTE' => 'CTE',
+    //         'KIFFB' => 'KIFFB',
+    //         'KSCADC' => 'KSCADC',
+    //         'Tourism' => 'Tourism',
+    //         'Fisheries' => 'Fisheries'
+    //     );
+
+    //     $data = array(
+    //         'loc' => $this->manager->get_details('agreement_location', array('agreement_id' => $agreement_id)),
+    //         'item' => $this->manager->get_details('agreement_item', array('agreement_id' => $agreement_id)),
+    //         'dept' => $dept
+    //     );
+
+    //     $circle = $this->manager->get_details('circle', array());
+    //     $type_of_work = $this->manager->get_distinct('work', 'work_type');
+
+    //     $this->load->view('section/agreementForm', [
+    //         'data' => $data,
+    //         'circle' => $circle,
+    //         'type_of_work' => $type_of_work,
+    //         'editAgre' => $editAgre
+    //     ]);
+    //     $this->load->view('footer');
+    // }
 
     public function addUpdateAgreement()
     {
