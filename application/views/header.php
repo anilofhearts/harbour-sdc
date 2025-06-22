@@ -115,6 +115,41 @@ $(function() {
             return _fetch(input, init);
         };
     })();
+
+// Helper to get CSRF token from meta tags
+function getCsrfToken() {
+    var name = document.querySelector('meta[name="csrf-token-name"]').getAttribute('content');
+    var hash = document.querySelector('meta[name="csrf-token-hash"]').getAttribute('content');
+    var obj = {};
+    obj[name] = hash;
+    return obj;
+}
+
+// Patch all XMLHttpRequest POSTs to include CSRF token
+(function() {
+    var origOpen = XMLHttpRequest.prototype.open;
+    var origSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function(method, url) {
+        this._csrfMethod = method;
+        this._csrfUrl = url;
+        return origOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function(body) {
+        if (this._csrfMethod && this._csrfMethod.toUpperCase() === 'POST') {
+            var csrf = getCsrfToken();
+            var key = Object.keys(csrf)[0];
+            var val = csrf[key];
+            if (typeof body === 'string' && body.length > 0) {
+                body += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(val);
+            } else if (typeof body === 'string') {
+                body = encodeURIComponent(key) + '=' + encodeURIComponent(val);
+            } else if (!body) {
+                body = encodeURIComponent(key) + '=' + encodeURIComponent(val);
+            }
+        }
+        return origSend.call(this, body);
+    };
+})();
     </script>
 </head>
 
