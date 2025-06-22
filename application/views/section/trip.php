@@ -422,19 +422,19 @@ document.getElementById("snap").setAttribute(
                                 <?php echo anchor("weightmentCard/$trip->trip_id", '<i class="mdi mdi-weight-kilogram"></i>', ['data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Weightmet Card']); ?>
                               </td>
                               <!-- Update Button -->
-                                <form action="<?= site_url("editTrip/$trip->trip_id"); ?>" method="post" style="display:inline;">
+                               <!--- <form action="<?= site_url("editTrip/$trip->trip_id"); ?>" method="post" style="display:inline;">
                                         <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Update">
                                             <i class="mdi mdi-check"></i>
                                         </button>
                                     </form>
-                                 <!-- Delete Button -->
-                                 <form action="<?= site_url("deleteTrip/$trip->trip_id"); ?>" method="post" style="display:inline;" onsubmit="return doConfirm();">
+                                  Delete Button -->
+                                 <!--- <form action="<?= site_url("deleteTrip/$trip->trip_id"); ?>" method="post" style="display:inline;" onsubmit="return doConfirm();">
                                         <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">
                                             <i class="mdi mdi-delete"></i>
                                         </button>
-                                    </form>   
+                                    </form>   -->
                                                            </td>
                             </tr>
                             <?php endforeach;} ?>
@@ -656,7 +656,7 @@ function getchainage() {
     var location_id = document.getElementById('location').value;
     var item_id = document.getElementById('item').value;
     $.ajax({
-        url:'getChainage',
+        url:'<?=base_url()?>getChainage',
         method: 'post',
         data: {chainage_agr_loc_id:location_id, chainage_item_id:item_id},
         cache:false,
@@ -729,10 +729,12 @@ fetch(remoteimageurl).then(res => {
         uploader.style.width = percentage.toFixed(2)+'%';
         uploader.innerHTML = percentage.toFixed(2)+'%';
     return snapshot.ref.getDownloadURL()
- }).then(url => {
+ })
+ //Old Line
+ .then(url => {
    console.log("Firebase storage image uploaded : ", url);
           var data = $("#tripForm").serialize();
-data = data+"&in_image="+url;
+data = data + "&in_image=" + encodeURIComponent(url);
       console.log(url);
       console.log(data);
 

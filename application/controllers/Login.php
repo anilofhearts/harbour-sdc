@@ -139,24 +139,7 @@ class Login extends CI_Controller {
               $user_info = $this->db->get_where('user', array('name' => $post['user'], 'status' => '1'))->row();
   
               if($user_info && password_verify($post['password'], $user_info->password)) {
-  
-                  // Check for active sessions
-                  $active_session = $this->db->get_where('user_sessions', array(
-                      'user_id' => $user_info->user_id,
-                      'status' => 'valid'
-                  ))->row();
-
-                  if ($active_session) {
-                      // Option 1: Invalidate existing session and allow the new one
-                      $this->db->update('user_sessions', array('status' => 'invalid'), array('id' => $active_session->id));
-  
-                      // OR
-  
-                      // Option 2: Deny the new login attempt
-                      $this->session->set_flashdata('status', "You are already logged in from another device or session.");
-                      redirect($_SERVER['HTTP_REFERER']);
-                      return;
-                  }
+                  // Removed: Check for active sessions in user_sessions table
   
                   // Insert new session record
                   $session_id = session_id();

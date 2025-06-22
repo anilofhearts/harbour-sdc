@@ -15,7 +15,7 @@
 
 # RewriteBase /
 # Error Document
-ErrorDocument 404 /error404.html
+#ErrorDocument 404 /error404.html
 
 # Security Headers
 # Header always set X-Frame-Options "DENY"

@@ -215,9 +215,9 @@ function Popup(data) {
     mywindow.document.write('</body></html>');
 
     mywindow.print();
-    mywindow.close();
+    //mywindow.close();
 
-    return true;
+    return false;
 }
 </script>
 

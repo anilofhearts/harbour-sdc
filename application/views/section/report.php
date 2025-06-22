@@ -74,7 +74,7 @@
                         <div class="form-group col-lg-3">
                           <label>Vehicle No</label>
 
-                        <?php echo form_open('circle/report/'); ?>
+                        <?php echo form_open('section/report/'); ?>
 
                           <select name="trip_vehicle_id" class="form-control select2 custom-select">
                             <option value="">-- Select Vehicle --</option>
@@ -226,7 +226,7 @@ function getchainage() {
     var location_id = document.getElementById('location').value;
     var item_id = document.getElementById('item').value;
     $.ajax({
-        url:'getChainage',
+        url:'<?=base_url()?>getChainage',
         method: 'post',
         data: {chainage_agr_loc_id:location_id, chainage_item_id:item_id},
         cache:false,

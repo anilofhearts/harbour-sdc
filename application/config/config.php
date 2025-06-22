@@ -18,9 +18,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | to $_SERVER['SERVER_ADDR'] if available, or localhost otherwise.
 | The auto-detection mechanism exists only for convenience during
 | development and MUST NOT be used in production!
-|
-| If you need to allow multiple domains, remember that this file is still
+|| If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
+
 |
 */
 /*if($_SERVER['HTTP_HOST'] == "localhost")
@@ -462,7 +462,7 @@ $config['standardize_newlines'] = FALSE;
 |          for backwards compatibility purposes!
 |
 */
-$config['global_xss_filtering'] = TRUE;
+$config['global_xss_filtering'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
