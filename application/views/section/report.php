@@ -74,7 +74,7 @@
                         <div class="form-group col-lg-3">
                           <label>Vehicle No</label>
 
-                        <?php echo form_open('circle/report/'); ?>
+                        <?php echo form_open('section/report/'); ?>
 
                           <select name="trip_vehicle_id" class="form-control select2 custom-select">
                             <option value="">-- Select Vehicle --</option>
