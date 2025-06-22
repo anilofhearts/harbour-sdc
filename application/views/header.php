@@ -73,7 +73,49 @@ $(function() {
             font-weight: bold;
         }
     </style>
+    <!-- CSRF meta tags for global JS access -->
+    <?php if (isset($this->security)) { ?>
+        <meta name="csrf-token-name" content="<?php echo $this->security->get_csrf_token_name(); ?>">
+        <meta name="csrf-token-hash" content="<?php echo $this->security->get_csrf_hash(); ?>">
+    <?php } ?>
+    <script>
+    // Global AJAX CSRF token injection for jQuery and fetch
+    (function() {
+        var csrfName = document.querySelector('meta[name="csrf-token-name"]').getAttribute('content');
+        var csrfHash = document.querySelector('meta[name="csrf-token-hash"]').getAttribute('content');
 
+        // jQuery global setup
+        if (window.jQuery) {
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'DELETE') {
+                        if (settings.data && typeof settings.data === 'string') {
+                            settings.data += '&' + encodeURIComponent(csrfName) + '=' + encodeURIComponent(csrfHash);
+                        } else if (settings.data && typeof settings.data === 'object') {
+                            settings.data[csrfName] = csrfHash;
+                        } else {
+                            settings.data = csrfName + '=' + csrfHash;
+                        }
+                    }
+                }
+            });
+        }
+
+        // fetch API global wrapper
+        var _fetch = window.fetch;
+        window.fetch = function(input, init) {
+            init = init || {};
+            if (init.method && ['POST','PUT','DELETE'].includes(init.method.toUpperCase())) {
+                if (init.headers instanceof Headers) {
+                    init.headers.append(csrfName, csrfHash);
+                } else {
+                    init.headers = Object.assign({}, init.headers || {}, { [csrfName]: csrfHash });
+                }
+            }
+            return _fetch(input, init);
+        };
+    })();
+    </script>
 </head>
 
 <body>
