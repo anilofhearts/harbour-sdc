@@ -244,7 +244,7 @@ function getchainage() {
     var location_id = document.getElementById('location').value;
     var item_id = document.getElementById('item').value;
     $.ajax({
-        url: '<?=site_url("index.php/getChainage")?>',
+        url: '<?=base_url()?>json/getChainage',
         method: 'post',
         data: {chainage_agr_loc_id:location_id, chainage_item_id:item_id},
         cache:false,
