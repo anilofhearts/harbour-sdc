@@ -656,7 +656,7 @@ function getchainage() {
     var location_id = document.getElementById('location').value;
     var item_id = document.getElementById('item').value;
     $.ajax({
-        url:'<?=base_url()?>/json/getChainage',
+        url:'https://trips.hed.kerala.gov.in/getChainage',
         method: 'post',
         data: {chainage_agr_loc_id:location_id, chainage_item_id:item_id},
         cache:false,
