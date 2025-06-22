@@ -548,8 +548,8 @@ class Section extends MY_Controller {
     public function addUpdateWork()
     {
         $this->load->library('form_validation');
-        $this->form_validation->set_rules('item_no', 'Item No', 'numeric|required');
-        $this->form_validation->set_rules('item_name', 'Item Name', 'trim|required|callback_check_spaces_only');
+        $this->form_validation->set_rules('item_no', 'Item No', 'decimal|required');
+        $this->form_validation->set_rules('item_name', 'Item Name', 'trim|required|regex_match[/^[A-Za-z0-9\- ]+$/]|callback_check_spaces_only');
         $this->form_validation->set_rules('unit', 'Unit', 'trim|required|callback_check_spaces_only');
         $this->form_validation->set_rules('item_description', 'Item Description', 'trim|required|callback_check_spaces_only');
 
