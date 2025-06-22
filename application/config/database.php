@@ -84,7 +84,7 @@ $db['default'] = array(
 	//'password' => 'Alpha@123',
 
 	//'database' => 'hed',
-	'database' => 'harbour_copy',
+	'database' => 'harbour',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
