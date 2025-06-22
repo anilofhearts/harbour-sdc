@@ -170,23 +170,29 @@ class Login extends CI_Controller {
           echo validation_errors('<h1 class="error">', '</h1>');
       }
   }
-  public function logout() {
-    $session_data = $this->session->userdata('harbour'); // Replace 'harbour' with your session key
+//   public function logout() {
+//     $session_data = $this->session->userdata('harbour'); // Replace 'harbour' with your session key
 
-    if ($session_data) {
-        $this->db->where('user_id', $session_data['user_id']);
-        $this->db->where('session_id', session_id());
-        $this->db->update('user_sessions', array('status' => 'invalid'));
+//     if ($session_data) {
+//         $this->db->where('user_id', $session_data['user_id']);
+//         $this->db->where('session_id', session_id());
+//         $this->db->update('user_sessions', array('status' => 'invalid'));
+//     }
+
+//     // Destroy the session
+//     $this->session->unset_userdata('harbour');
+//     $this->session->sess_destroy();
+
+//     // Redirect to login page or home page
+//     redirect('login'); // Adjust to your actual route
+// }
+      public function logout()
+    {
+ $this->session->sess_destroy();
+        $this->session->unset_userdata('harbour');
+     //  echo $this->session->has_userdata('harbour');
+       redirect('login', 'refresh');
     }
-
-    // Destroy the session
-    $this->session->unset_userdata('harbour');
-    $this->session->sess_destroy();
-
-    // Redirect to login page or home page
-    redirect('login'); // Adjust to your actual route
-}
-
 
     // New Method to change password and invalidate sessions
     public function change_password() {
