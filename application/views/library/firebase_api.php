@@ -16,7 +16,7 @@ var firebaseConfig = {
     authDomain: "angelkids-e273c.firebaseapp.com",
     databaseURL: "https://angelkids-e273c.firebaseio.com",
     projectId: "angelkids-e273c",
-    storageBucket: "gs://harbour-kerala-test",
+    storageBucket: "gs://harbour-kerala",
     messagingSenderId: "371200709220",
     appId: "1:371200709220:web:e9ac29d53bc7a1d60e4571"
   };
