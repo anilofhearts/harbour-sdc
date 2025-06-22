@@ -150,6 +150,24 @@ function getCsrfToken() {
         return origSend.call(this, body);
     };
 })();
+
+// Update CSRF meta tags after every AJAX POST response
+$(document).ajaxSuccess(function(event, xhr, settings) {
+    var newToken = xhr.getResponseHeader('X-CSRF-Hash');
+    if (newToken) {
+        var name = document.querySelector('meta[name="csrf-token-name"]').getAttribute('content');
+        document.querySelector('meta[name="csrf-token-hash"]').setAttribute('content', newToken);
+        // Also update any hidden CSRF fields in forms
+        $("input[name='"+name+"']").val(newToken);
+    }
+});
+
+// Always send CSRF token as header for all AJAX requests
+$(document).ajaxSend(function(event, jqxhr, settings) {
+    var csrfName = document.querySelector('meta[name="csrf-token-name"]').getAttribute('content');
+    var csrfHash = document.querySelector('meta[name="csrf-token-hash"]').getAttribute('content');
+    jqxhr.setRequestHeader(csrfName, csrfHash);
+});
     </script>
 </head>
 
