@@ -693,6 +693,7 @@ $(document).ready( function () {
 
    // var weight=document.getElementById("weight").value;
    var data = $("#tripForm").serialize();
+   data = appendCsrfToData(data);
 
     if(trip == '')
     {
@@ -735,6 +736,7 @@ fetch(remoteimageurl).then(res => {
    console.log("Firebase storage image uploaded : ", url);
           var data = $("#tripForm").serialize();
 data = data + "&in_image=" + encodeURIComponent(url);
+data = appendCsrfToData(data);
       console.log(url);
       console.log(data);
 
