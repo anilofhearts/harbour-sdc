@@ -49,6 +49,7 @@
                                     <th>Root</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    <th>Users</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,6 +72,7 @@
                                                 </button>
 
                                             </td>
+                                            <td class='text-center'><a href='manage_users/division/$data->division' class='btn btn-sm btn-warning'>Users</a></td>
 
                                         </tr>";
                                         $i++;
