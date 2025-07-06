@@ -684,33 +684,18 @@ public function get_item_summary_today($agreement_id) {
     return array();
 }
 
-// Get cumulative item summary - try the view first, fallback to manual calculation
+// Get cumulative item summary using the existing database view
 public function get_item_summary_cumulative($agreement_id) {
-    // First try the view if it exists
     $q = $this->db->query("
         SELECT 
             agreement_id,
             item,
-            net_weight
+            ROUND(net_weight/1000, -1) as net_weight,
+            total_in_weight,
+            total_out_weight,
+            trip_count
         FROM item_summary_cumulative
         WHERE agreement_id = ?
-    ", array($agreement_id));
-    
-    if ($q->num_rows() > 0) {
-        return $q->result();
-    }
-    
-    // Fallback to manual calculation if view doesn't exist
-    $q = $this->db->query("
-        SELECT 
-            ai.item,
-            SUM(ROUND((t.in_weight - t.out_weight) * (1 - t.onsite_loss/100), 2)) as net_weight
-        FROM trip t
-        LEFT JOIN agreement_item ai ON ai.agreement_item_id = t.agreement_item_id
-        WHERE t.agreement_id = ? 
-        AND t.out_weight IS NOT NULL
-        AND t.out_weight > 0
-        GROUP BY ai.item
     ", array($agreement_id));
     
     if ($q->num_rows() > 0) {
