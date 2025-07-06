@@ -219,11 +219,181 @@
                             </tr>
                             <tr>
                                 <td><?= html_escape($data['subdivision'][0]->subdivision) ?> Sub Division :</td>
-                                <td class="text-success"><?= html_escape($data['subUser'][0]->designation.' '.$data['subUser'][0]->fullname) ?></td>
+                                <td class="text-success"><?= html_escape($data['subdivUser'][0]->designation.' '.$data['subdivUser'][0]->fullname) ?></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- Modal for Resetting Password -->
+    <!-- ============================================================== -->
+    <div class="modal fade" id="resetPass" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reset Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?=form_open('section/reset_password');?>
+                    <input type="hidden" name="user_id" id="reset_user_id" value="">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>New Password:</td>
+                                <td><?=form_password('new_password', '', ['class' => 'form-control', 'required' => 'required']); ?>
+                                    <?=form_error('new_password', '<p class="text-danger">', '</p>'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Confirm Password:</td>
+                                <td><?=form_password('cnf_password', '', ['class' => 'form-control', 'required' => 'required']); ?>
+                                    <?=form_error('cnf_password', '<p class="text-danger">', '</p>'); ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="text-right">
+                                <td colspan="2">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <?=form_submit('submit', 'Reset Password', ['class' => 'btn btn-warning']);?>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <?=form_close();?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal (Reset Pass) -->
+
+    <!-- ============================================================== -->
+    <!-- Modal for Adding/Editing User -->
+    <!-- ============================================================== -->
+    <div class="modal fade" id="addEditUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add/Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?=form_open('section/add_edit_user');?>
+                    <input type="hidden" name="user_id" id="user_id" value="">
+                    <input type="hidden" name="section_id" value="<?=html_escape($data['section'][0]->section_id)?>">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>PEN:</td>
+                                <td><?=form_input('pen', '', ['id' => 'pen', 'class' => 'form-control', 'required' => 'required']);?>
+                                    <?=form_error('pen', '<p class="text-danger">', '</p>'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Designation:</td>
+                                <td>
+                                    <select name="designation_id" id="designation_id" class="form-control" required="required">
+                                        <option>-- Select Designation --</option>
+                                        <?php foreach ($data['designation'] as $dgn): ?>
+                                            <option value="<?=html_escape($dgn->designation_id)?>"><?=html_escape($dgn->designation)?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fullname:</td>
+                                <td><?=form_input('fullname', '', ['id' => 'fullname', 'class' => 'form-control', 'required' => 'required']);?>
+                                    <?=form_error('fullname', '<p class="text-danger">', '</p>'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email ID:</td>
+                                <td><?=form_input('email_id', '', ['id' => 'email_id', 'class' => 'form-control']);?>
+                                    <?=form_error('email_id', '<p class="text-danger">', '</p>'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Phone No.:</td>
+                                <td><?=form_input('phone_no', '', ['id' => 'phone_no', 'class' => 'form-control']);?>
+                                    <?=form_error('phone_no', '<p class="text-danger">', '</p>'); ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="text-right">
+                                <td colspan="2">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <?=form_submit('submit', 'Save', ['class' => 'btn btn-primary']);?>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <?=form_close();?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal (add/edit user) -->
+
+    <!-- ============================================================== -->
+    <!-- Section Users List -->
+    <!-- ============================================================== -->
+    <div class="row">
+        <div class="card col-md-9">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <h4 class="card-title">Section Users</h4>
+                    </div>
+                    <div class="col-lg-2">
+                        <?=anchor('#', 'Add User', ['class'=>'btn btn-warning text-white', "data-toggle"=>"modal", "data-target"=>"#addEditUser"]); ?>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr class="bg-primary text-white">
+                            <th>PEN</th>
+                            <th>Designation</th>
+                            <th>Fullname</th>
+                            <th>Email ID</th>
+                            <th>Phone No.</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if(isset($data['users']) && !empty($data['users'])): 
+                            foreach($data['users'] as $usr): 
+                                $id = html_escape($usr->user_id);
+                                $did = html_escape($usr->designation_id);
+                        ?>
+                        <tr>
+                            <td><?=html_escape($usr->name);?></td>
+                            <td><?=html_escape($usr->designation);?></td>
+                            <td><?=html_escape($usr->fullname);?></td>
+                            <td><?=html_escape($usr->email_id);?></td>
+                            <td><?=html_escape($usr->phone_no);?></td>
+                            <td>
+                                <?=anchor('#', 'Edit', ['class'=>'btn btn-outline-primary', "data-toggle"=>"modal", "data-target"=>"#addEditUser", "onclick"=>"fillEditForm($id, '$usr->name', '$did', '$usr->fullname', '$usr->email_id', '$usr->phone_no')"]); ?>
+                                <?=anchor('#', 'Reset Password', ['class'=>'btn btn-outline-warning', "data-toggle"=>"modal", "data-target"=>"#resetPass", "onclick"=>"fillResetForm($id)"]); ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; 
+                        else: ?>
+                        <tr>
+                            <td colspan="6" class="text-center">No users found in this section</td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -236,3 +406,18 @@
 <!-- End Container fluid  -->
 <!-- ============================================================== -->
 </div>
+
+<script type="text/javascript">
+    function fillEditForm(id, pen, did, fullname, email_id, phone_no) {
+        document.getElementById('user_id').value = id;
+        document.getElementById('pen').value = pen;
+        document.getElementById('designation_id').value = did;
+        document.getElementById('fullname').value = fullname;
+        document.getElementById('email_id').value = email_id;
+        document.getElementById('phone_no').value = phone_no;
+    }
+
+    function fillResetForm(id) {
+        document.getElementById('reset_user_id').value = id;
+    }
+</script>

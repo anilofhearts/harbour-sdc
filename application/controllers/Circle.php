@@ -61,83 +61,47 @@ class Circle extends MY_Controller {
         $this->self();
     }
 
-    /*
     public function user()
     {
-        $user = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$this->user['section_id']));
-        // $subdivision = $this->manager->get_details('subdivision', array('subdivision_id'=>$this->user['section_id']));
-        // $division = $this->manager->get_details('division', array('division_id'=>$this->user['section_id']));
+        $user = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('user_id'=>$this->user['user_id']));
         $circle = $this->manager->get_details('circle', array('circle_id'=>$this->user['section_id']));
-        // $subUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$subdivision[0]->subdivision_id));
-        // $divUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$division[0]->division_id));
-        // $cirUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$circle[0]->circle_id));
         $ce = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$circle[0]->state_id));
 
         $divisions = $this->manager->get_details('division', array('circle_id'=>$this->user['section_id']));
-        
-        
-      //  print_r($subdivisions);
         $users = array();
         
-        foreach($divisions as $div_data) {
-             $subdivisions = $this->manager->get_details('subdivision', array('division_id'=>$div_data->division_id));
-            
-            $usrs = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$div_data->division_id));
-            foreach($usrs as $usr) {
-                array_push($users, array(
-                    'user_id' => $usr->user_id,
-                    'section_id' => $div_data->division_id,
-                    'division' => $div_data->division,
-                    'name' => $usr->name,
-                    'fullname' => $usr->fullname,
-                    'designation_id' => $usr->designation_id,
-                    'designation' => $usr->designation,
-                    'email_id' => $usr->email_id,
-                    'phone_no' => $usr->phone_no,
-                ));
-                foreach($subdivisions as $sub_v)
-                {
-         $usrs_new = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$sub_v->subdivision_id));
-            foreach($usrs_new as $usr_z) {
-                array_push($users, array(
-                    'user_id' =>$usr_z->user_id,
-                    'section_id' => $sub_v->subdivision_id,
-                    'division' =>$div_data->division."=>".$sub_v->subdivision,
-                    'name' =>$usr_z->name,
-                    'fullname' => $usr_z->fullname,
-                    'designation_id' => $usr_z->designation_id,
-                    'designation' => $usr_z->designation,
-                    'email_id' => $usr_z->email_id,
-                    'phone_no' => $usr_z->phone_no,
-                ));
-
-            }
-                }
-
-            } 
-        }
         $i = 0;
-        while ( $i < count($subdivisions)) {
+        while ( $i < count($divisions)) {
+            $usrs = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$divisions[$i]->division_id));
+            if($usrs) {
+                foreach($usrs as $usr) {
+                    array_push($users, array(
+                        'user_id' => $usr->user_id,
+                        'section_id' => $divisions[$i]->division_id,
+                        'division' => $divisions[$i]->division,
+                        'name' => $usr->name,
+                        'fullname' => $usr->fullname,
+                        'designation_id' => $usr->designation_id,
+                        'designation' => $usr->designation,
+                        'email_id' => $usr->email_id,
+                        'phone_no' => $usr->phone_no,
+                    ));
+                }
+            }
             $i++;
         }
-
 
         $data = array(
             'user' => $user,
             'users' => $users,
             'divisions' => $divisions,
-            // 'division' => $division,
             'circle' => $circle,
-            // 'subUser' => $subUser,
-            // 'divUser' => $divUser,
             'ce' => $ce,
             'designation' => $this->manager->get_details('designation', array())
         );
-        //$user = ;
         $this->load->view('circle/user', ['data'=>$data]);
         $this->load->view('footer');
     }
-    */
     public function change_password()
     {
         $this->change_user_password();
@@ -153,7 +117,7 @@ class Circle extends MY_Controller {
     public function add_edit_user()
     {
         $this->add_edit_user_profile('division');
-        $this->self();
+        $this->user();
     }
 
 

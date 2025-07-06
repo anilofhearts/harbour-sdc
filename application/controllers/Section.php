@@ -726,6 +726,50 @@ public function deleteWork($id = null)
         $this->self();
     }
 
+    public function user()
+    {
+        $user = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('user_id'=>$this->user['user_id']));
+        $section = $this->manager->get_details('section', array('section_id'=>$this->user['section_id']));
+        $subdivision = $this->manager->get_details('subdivision', array('subdivision_id'=>$section[0]->subdivision_id));
+        $division = $this->manager->get_details('division', array('division_id'=>$subdivision[0]->division_id));
+        $circle = $this->manager->get_details('circle', array('circle_id'=>$division[0]->circle_id));
+        $subdivUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$subdivision[0]->subdivision_id));
+        $divUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$division[0]->division_id));
+        $cirUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$circle[0]->circle_id));
+        $ce = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$circle[0]->state_id));
+
+        // Get users of the current section (including contractors)
+        $users = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$this->user['section_id']));
+
+        $data = array(
+            'user' => $user,
+            'users' => $users ? $users : array(),
+            'section' => $section,
+            'subdivision' => $subdivision,
+            'division' => $division,
+            'circle' => $circle,
+            'subdivUser' => $subdivUser,
+            'divUser' => $divUser,
+            'cirUser' => $cirUser,
+            'ce' => $ce,
+            'designation' => $this->manager->get_details('designation', array())
+        );
+        $this->load->view('section/user', ['data'=>$data]);
+        $this->load->view('footer');
+    }
+
+    public function add_edit_user()
+    {
+        $this->add_edit_user_profile();
+        $this->user();
+    }
+
+    public function reset_password()
+    {
+        $this->reset_user_password();
+        $this->user();
+    }
+
  public function change_password() {
     if ($this->input->post()) { // Only process if the form is submitted
         $this->change_user_password();

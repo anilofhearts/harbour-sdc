@@ -66,9 +66,53 @@ class Division extends MY_Controller {
         $this->self();
     }
 
+    public function user() {
+        $user = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('user_id'=>$this->user['user_id']));
+        $division = $this->manager->get_details('division', array('division_id'=>$this->user['section_id']));
+        $circle = $this->manager->get_details('circle', array('circle_id'=>$division[0]->circle_id));
+        $cirUser = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$circle[0]->circle_id));
+        $ce = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$circle[0]->state_id));
+
+        $subdivisions = $this->manager->get_details('subdivision', array('division_id'=>$this->user['section_id']));
+        $users = array();
+        $i = 0;
+        while ( $i < count($subdivisions)) {
+            $usrs = $this->manager->select_join('user', 'designation', 'user.designation_id = designation.designation_id', array('section_id'=>$subdivisions[$i]->subdivision_id));
+            if($usrs) {
+                foreach($usrs as $usr) {
+                    array_push($users, array(
+                        'user_id' => $usr->user_id,
+                        'section_id' => $subdivisions[$i]->subdivision_id,
+                        'subdivision' => $subdivisions[$i]->subdivision,
+                        'name' => $usr->name,
+                        'fullname' => $usr->fullname,
+                        'designation_id' => $usr->designation_id,
+                        'designation' => $usr->designation,
+                        'email_id' => $usr->email_id,
+                        'phone_no' => $usr->phone_no,
+                    ));
+                }
+            }
+            $i++;
+        }
+
+        $data = array(
+            'user' => $user,
+            'users' => $users,
+            'subdivisions' => $subdivisions,
+            'division' => $division,
+            'circle' => $circle,
+            'cirUser' => $cirUser,
+            'ce' => $ce,
+            'designation' => $this->manager->get_details('designation', array())
+        );
+        $this->load->view('division/user', ['data'=>$data]);
+        $this->load->view('footer');
+    }
+
     public function add_edit_user() {
         $this->add_edit_user_profile('subdivision');
-        $this->self();
+        $this->user();
     }
 
     public function report() {

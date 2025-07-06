@@ -119,22 +119,24 @@ $route['getSubdivision'] = 'json/getSubdivision';
 $route['getSection'] = 'json/getSection';
 $route['getChainage'] = 'json/getChainage';
 
-//$route['user'] = 'section/user';
+$route['section/user'] = 'section/user';
 $route['edit_user'] = 'section/edit_user';
 // $route['change_password'] = 'section/change_password';
 
 
 // subdivision controller
 $route['subdivision'] = 'subdivision/index';
-//$route['subdivision_user'] = 'subdivision/user';
+$route['subdivision/user'] = 'subdivision/user';
 
 
 // division controller
 $route['division'] = 'division/index';
+$route['division/user'] = 'division/user';
 
 
 // circle controller
 $route['circle'] = 'circle/index';
+$route['circle/user'] = 'circle/user';
 $route['reportc'] = 'circle/report';
 
 
