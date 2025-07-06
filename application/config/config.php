@@ -401,7 +401,7 @@ $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 28800;
 $config['sess_save_path'] = sys_get_temp_dir();
 $config['sess_match_ip'] = TRUE;
-$config['sess_time_to_update'] = 300;
+$config['sess_time_to_update'] = 1800;
 $config['sess_regenerate_destroy'] = TRUE;
 $config['cookie_prefix']    = '';
 $config['cookie_domain']    = '';
@@ -425,7 +425,7 @@ $config['cookie_samesite']  = 'Lax'; // Options: 'Lax', 'Strict', 'None'
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['sess_time_to_update'] = 300;
+$config['sess_time_to_update'] = 1800;
 $config['sess_regenerate_destroy'] = TRUE;
 $config['sess_match_ip'] = TRUE;
 $config['sess_expiration'] = 28800;

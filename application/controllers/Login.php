@@ -15,7 +15,7 @@ class Login extends CI_Controller {
         "PHPSESSID",    // Cookie name
         session_id(),    // Session ID
         [
-            'expires' => time() + 3600,   // Cookie expiration time (1 hour from now)
+            'expires' => time() + 28800,  // Cookie expiration time (8 hours from now)
             'path' => '/',                // Cookie path
             'domain' => 'trips.hed.kerala.gov.in',   // Domain for the cookie
             'secure' => true,             // Set to true for HTTPS
@@ -27,7 +27,7 @@ class Login extends CI_Controller {
         "ci_session",    // Cookie name
         session_id(),    // Session ID
         [
-            'expires' => time() + 3600,   // Cookie expiration time (1 hour from now)
+            'expires' => time() + 28800,  // Cookie expiration time (8 hours from now)
             'path' => '/',                // Cookie path
             'domain' => 'trips.hed.kerala.gov.in',   // Domain for the cookie
             'secure' => true,             // Set to true for HTTPS
