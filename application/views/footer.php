@@ -35,7 +35,7 @@
     
 
 
-    <!-- <script src="<?php echo base_url(); ?>public/assets/libs/popper.js/dist/umd/popper.min.js"></script> -->
+    <script src="<?php echo base_url(); ?>public/assets/libs/popper.js/dist/umd/popper.min.js"></script>
     <script src="<?php echo base_url(); ?>public/assets/extra-libs/DataTables/datatables.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
 

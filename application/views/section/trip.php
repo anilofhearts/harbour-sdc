@@ -126,7 +126,7 @@ $this->load->view("library/firebase_api");
                     <div class="row">
 
                         <div class="form-group col-lg-2.3">
-                          <label><span>Vehicle No</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-success" data-toggle="modal" data-target="#vehicleForm"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add Vehicle"></i></span></label>
+                          <label><span>Vehicle No</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-success" data-toggle="modal" data-target="#vehicleForm" style="cursor: pointer;"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add Vehicle"></i></span></label>
 
                        <!-- Form Trip Start -->
 
@@ -467,6 +467,15 @@ setInterval(lockWeight,5000);
  $('#saver').prop("disabled",true);
    $('#lock_wt').prop("disabled",true);
      document.getElementById("weight").readOnly=true;
+
+// Initialize tooltips and ensure modal functionality
+$('[data-toggle="tooltip"]').tooltip();
+
+// Fallback for modal if bootstrap doesn't initialize properly
+$('[data-target="#vehicleForm"]').click(function(e) {
+    e.preventDefault();
+    $('#vehicleForm').modal('show');
+});
 });
 
 function stop_capture() {
