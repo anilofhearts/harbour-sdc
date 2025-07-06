@@ -75,6 +75,8 @@ $route['manage_users/(:any)/(:any)']= "welcome/manage_users/$1/$2";
 $route['add_edit_user'] = "Welcome/add_edit_user";
 $route['delete_user/(:num)/(:any)/(:any)'] = "welcome/delete_user/$1/$2/$3";
 $route['reset_password'] = "Welcome/reset_password";
+$route['admin_change_password'] = "Welcome/admin_change_password";
+$route['admin_change_password_post'] = "Welcome/admin_change_password_post";
 
 // section controller
 $route['section'] = 'section/index';

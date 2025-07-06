@@ -12,6 +12,7 @@
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('division_view')?>" aria-expanded="false"><i class="mdi mdi-chart-bubble"></i><span class="hide-menu">Divisions</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('subdivision_view')?>" aria-expanded="false"><i class="mdi mdi-border-inside"></i><span class="hide-menu">Sub Divisions</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('section_view')?>" aria-expanded="false"><i class="mdi mdi-blur-linear"></i><span class="hide-menu">Section</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('admin_change_password')?>" aria-expanded="false"><i class="mdi mdi-lock"></i><span class="hide-menu">Change Password</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="<?=base_url('logout')?>" aria-expanded="false"><i class="fa fa-power-off m-r-5 m-l-5"></i><span class="hide-menu">Logout</span></a></li>
 
                     </ul>

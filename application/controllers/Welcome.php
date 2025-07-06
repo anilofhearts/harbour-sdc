@@ -297,4 +297,115 @@ class Welcome extends MY_Controller {
       $this->manage_users($role, $name);
     }
 
+    public function admin_change_password()
+    {
+        $role_id = $_SESSION['harbour']['role_id'];
+        if ($role_id != 'admin') {
+            redirect($role_id,'refresh');
+        }
+
+        $this->load->view('admin/navbar');
+        
+        $message = $this->session->flashdata('message');
+        $messageClass = $this->session->flashdata('messageClass');
+        
+        $this->load->view('admin/change_password', [
+            'message' => $message,
+            'messageClass' => $messageClass
+        ]);
+        $this->load->view('footer');
+    }
+
+    public function admin_change_password_post()
+    {
+        $role_id = $_SESSION['harbour']['role_id'];
+        if ($role_id != 'admin') {
+            redirect($role_id,'refresh');
+        }
+
+        $this->load->library('form_validation');
+
+        // Current password validation
+        $this->form_validation->set_rules('current_password', 'Current Password', 'trim|required');
+
+        // New password validation with complexity check
+        $this->form_validation->set_rules('new_password', 'New Password', 'trim|required|min_length[8]|callback_admin_valid_password');
+
+        // Confirm password validation
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|matches[new_password]');
+
+        if ($this->form_validation->run() == TRUE) {
+
+            $user_id = $_SESSION['harbour']['user_id'];
+            $current_password = $this->input->post('current_password');
+            $new_password = $this->input->post('new_password');
+
+            $user = $this->manager->get_details('user', array('user_id' => $user_id));
+
+            if (isset($user[0])) {
+
+                $check = $this->manager->verify_hash($current_password, $user[0]->password);
+
+                if ($check == 1) {
+
+                    // Update the password
+                    $data = array(
+                        'password' => $this->manager->hash_it($new_password)
+                    );
+
+                    $this->manager->log('Admin changing password for user id-' . $user_id, $data);
+                    $q = $this->manager->update_data('user', $data, array('user_id' => $user_id));
+
+                    if ($q) {
+                        // Invalidate all sessions for the user
+                        $this->db->where('user_id', $user_id);
+                        $this->db->update('user_sessions', array('status' => 'invalid'));
+
+                        $this->session->set_flashdata('message', 'Password changed successfully! Please login again.');
+                        $this->session->set_flashdata('messageClass', 'alert-success');
+                        
+                        // Destroy current session and redirect to login
+                        $this->session->sess_destroy();
+                        redirect('login', 'refresh');
+                    } else {
+                        $this->session->set_flashdata('message', 'Failed to change password. Please try again.');
+                        $this->session->set_flashdata('messageClass', 'alert-danger');
+                        redirect('admin_change_password', 'refresh');
+                    }
+                } else {
+                    $this->session->set_flashdata('message', 'Current password is incorrect. Please try again.');
+                    $this->session->set_flashdata('messageClass', 'alert-danger');
+                    redirect('admin_change_password', 'refresh');
+                }
+            }
+        } else {
+            $this->session->set_flashdata('message', validation_errors());
+            $this->session->set_flashdata('messageClass', 'alert-danger');
+            redirect('admin_change_password', 'refresh');
+        }
+    }
+
+    // Password complexity validation callback for admin
+    public function admin_valid_password($password)
+    {
+        // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number, and one special character
+        if (!preg_match('/[A-Z]/', $password)) {
+            $this->form_validation->set_message('admin_valid_password', 'The {field} must include at least one uppercase letter.');
+            return FALSE;
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            $this->form_validation->set_message('admin_valid_password', 'The {field} must include at least one lowercase letter.');
+            return FALSE;
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            $this->form_validation->set_message('admin_valid_password', 'The {field} must include at least one number.');
+            return FALSE;
+        }
+        if (!preg_match('/[@$!%*?&]/', $password)) {
+            $this->form_validation->set_message('admin_valid_password', 'The {field} must include at least one special character (@$!%*?&).');
+            return FALSE;
+        }
+        return TRUE;
+    }
+
 }
