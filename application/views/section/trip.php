@@ -476,6 +476,24 @@ $('[data-target="#vehicleForm"]').click(function(e) {
     e.preventDefault();
     $('#vehicleForm').modal('show');
 });
+
+// Ensure modal close buttons work properly
+$('#vehicleForm [data-dismiss="modal"]').click(function(e) {
+    e.preventDefault();
+    $('#vehicleForm').modal('hide');
+});
+
+// Close modal when clicking outside of it
+$('#vehicleForm').click(function(e) {
+    if (e.target === this) {
+        $('#vehicleForm').modal('hide');
+    }
+});
+
+// Clear form when modal is closed
+$('#vehicleForm').on('hidden.bs.modal', function() {
+    $(this).find('form')[0].reset();
+});
 });
 
 function stop_capture() {
