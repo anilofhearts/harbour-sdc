@@ -311,13 +311,17 @@ document.getElementById("snap").setAttribute(
                                 <td class="text-danger">No. of Trips</td>
                                 <td><?=$data['trips_today']?></td>
                             </tr>
-                            <?php $itnet=0; if(isset($data['item_today'])) {foreach($data['item_today'] as $it):?>
+                            <?php $itnet=0; if(isset($data['item_today']) && !empty($data['item_today'])) {foreach($data['item_today'] as $it):?>
                             <tr>
                                 <td class="text-danger"><?=$it->item?></td>
                                 <td><?=round($it->net_weight/1000,3)?> T</td>
                                 <?php $itnet = $itnet+$it->net_weight; ?>
                             </tr>
-                            <?php endforeach; }?>
+                            <?php endforeach; } else { ?>
+                            <tr>
+                                <td class="text-danger" colspan="2">No completed trips today</td>
+                            </tr>
+                            <?php } ?>
                             <tr class="font-bold">
                                 <td class="text-danger">Total</td>
                                 <td><?=round($itnet/1000,3)?> T</td>
@@ -333,14 +337,18 @@ document.getElementById("snap").setAttribute(
                                 <td class="text-danger">No. of Trips</td>
                                 <td><?=$data['trips_all']?></td>
                             </tr>
-                            <?php $icnet=0; if(isset($data['item_cum'])) {
+                            <?php $icnet=0; if(isset($data['item_cum']) && !empty($data['item_cum'])) {
                                 foreach($data['item_cum'] as $ic):?>
                             <tr>
                                 <td class="text-danger"><?=$ic->item?></td>
                                 <td><?=round($ic->net_weight/1000,-1)?> T</td>
                                 <?php $icnet = $icnet+$ic->net_weight; ?>
                             </tr>
-                            <?php endforeach; }?>
+                            <?php endforeach; } else { ?>
+                            <tr>
+                                <td class="text-danger" colspan="2">No completed trips yet</td>
+                            </tr>
+                            <?php } ?>
                             <tr class="font-bold">
                                 <td class="text-danger">Total</td>
                                 <td><?=round($icnet/1000,-1)?> T</td>

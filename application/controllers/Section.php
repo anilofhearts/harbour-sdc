@@ -24,7 +24,7 @@ class Section extends MY_Controller {
         if ($agreement) {
             $chainage = $this->manager->get_chainage($agreement[0]->agreement_id);
             $est_ttl_cost = $this->manager->est_ttl_cost($agreement[0]->agreement_id);
-            $ttl_exp = $this->manager->ttl_exp($agreement[0]->agreement_id);
+            $ttl_exp = $this->manager->ttl_exp_fixed($agreement[0]->agreement_id);
 
             if ($chainage) {
                 foreach ($chainage as $cng) {
@@ -80,13 +80,13 @@ class Section extends MY_Controller {
             $chainage = $this->manager->get_details('chainage', array('chainage_agr_loc_id' => $location[0]->agreement_location_id, 'chainage_item_id' => $item[0]->agreement_item_id));
 
             $data = array(
-                'item_today' => $this->manager->get_details('item_summary_today', $where_agr),
-                'item_cum' => $this->manager->get_details('item_summary_cumulative', $where_agr),
+                'item_today' => $this->manager->get_item_summary_today($agreement[0]->agreement_id),
+                'item_cum' => $this->manager->get_item_summary_cumulative($agreement[0]->agreement_id),
                 'trips_today' => $this->manager->count_data('trip', array('agreement_id' => $agreement[0]->agreement_id, 'in_datetime >' => date('Y-m-d'))),
                 'trips_all' => $this->manager->count_data('trip', $where_agr),
                 'est_ttl' => $this->manager->get_sum('agreement_item', 'estimated_quantity', $where_agr),
                 'est_ttl_cost' => $this->manager->est_ttl_cost($agreement[0]->agreement_id),
-                'ttl_exp' => $this->manager->ttl_exp($agreement[0]->agreement_id)
+                'ttl_exp' => $this->manager->ttl_exp_fixed($agreement[0]->agreement_id)
             );
         } else {
             redirect('agreement', 'refresh');

@@ -456,7 +456,7 @@ class MY_Controller extends CI_Controller {
     // Continue loading the dashboard if section ID matches
     $chainage = $this->manager->get_chainage($agreement[0]->agreement_id);
     $est_ttl_cost = $this->manager->est_ttl_cost($agreement[0]->agreement_id);
-    $ttl_exp = $this->manager->ttl_exp($agreement[0]->agreement_id);
+    $ttl_exp = $this->manager->ttl_exp_fixed($agreement[0]->agreement_id);
 
     if (isset($chainage)) {
         foreach ($chainage as $cng) {

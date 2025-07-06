@@ -665,5 +665,105 @@ public function update_session_status($user_id, $status, $invalidate_other_sessi
            ->where('session_id', session_id())
            ->update('user_sessions', array('status' => $status));
 }
+
+// Get today's item summary using the existing database view
+public function get_item_summary_today($agreement_id) {
+    $q = $this->db->query("
+        SELECT 
+            agreement_id,
+            trip_date,
+            item,
+            net_weight
+        FROM item_summary_today
+        WHERE agreement_id = ?
+    ", array($agreement_id));
+    
+    if ($q->num_rows() > 0) {
+        return $q->result();
+    }
+    return array();
+}
+
+// Get cumulative item summary - try the view first, fallback to manual calculation
+public function get_item_summary_cumulative($agreement_id) {
+    // First try the view if it exists
+    $q = $this->db->query("
+        SELECT 
+            agreement_id,
+            item,
+            net_weight
+        FROM item_summary_cumulative
+        WHERE agreement_id = ?
+    ", array($agreement_id));
+    
+    if ($q->num_rows() > 0) {
+        return $q->result();
+    }
+    
+    // Fallback to manual calculation if view doesn't exist
+    $q = $this->db->query("
+        SELECT 
+            ai.item,
+            SUM(ROUND((t.in_weight - t.out_weight) * (1 - t.onsite_loss/100), 2)) as net_weight
+        FROM trip t
+        LEFT JOIN agreement_item ai ON ai.agreement_item_id = t.agreement_item_id
+        WHERE t.agreement_id = ? 
+        AND t.out_weight IS NOT NULL
+        AND t.out_weight > 0
+        GROUP BY ai.item
+    ", array($agreement_id));
+    
+    if ($q->num_rows() > 0) {
+        return $q->result();
+    }
+    return array();
+}
+
+// Updated ttl_exp method to use the view if available, fallback to manual calculation
+public function ttl_exp_fixed($agreement_id) {
+    // First try using the view approach (original method)
+    try {
+        $q = $this->db->query("
+            SELECT S.agreement_id, round(SUM(net_weight*estimated_rate)/10000, 2) AS ttl_exp
+            FROM item_summary_cumulative S
+            LEFT JOIN agreement_item I ON I.item = S.item 
+            WHERE S.agreement_id = ?
+        ", array($agreement_id));
+        
+        if ($q->num_rows() > 0) {
+            $result = $q->result()[0];
+            if ($result->ttl_exp === null) {
+                $result->ttl_exp = 0;
+            }
+            return $result;
+        }
+    } catch (Exception $e) {
+        // View doesn't exist, use fallback calculation
+    }
+    
+    // Fallback to direct trip table calculation
+    $q = $this->db->query("
+        SELECT 
+            t.agreement_id, 
+            ROUND(SUM((t.in_weight - t.out_weight) * (1 - t.onsite_loss/100) * ai.estimated_rate)/10000, 2) AS ttl_exp
+        FROM trip t
+        LEFT JOIN agreement_item ai ON ai.agreement_item_id = t.agreement_item_id
+        WHERE t.agreement_id = ? 
+        AND t.out_weight IS NOT NULL
+        AND t.out_weight > 0
+        GROUP BY t.agreement_id
+    ", array($agreement_id));
+    
+    if ($q->num_rows() > 0) {
+        $result = $q->result()[0];
+        if ($result->ttl_exp === null) {
+            $result->ttl_exp = 0;
+        }
+        return $result;
+    }
+    
+    // Return default object if no data
+    return (object) array('agreement_id' => $agreement_id, 'ttl_exp' => 0);
+}
 }
 
