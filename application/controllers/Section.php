@@ -374,67 +374,114 @@ class Section extends MY_Controller {
     public function chainage($agreement_id)
     {
         $agreement_id = html_escape($agreement_id); // Sanitize the input
+        
+        // Get agreement details
+        $agreement = $this->manager->get_details('agreement', array('agreement_id' => $agreement_id));
+        if (empty($agreement)) {
+            $this->session->set_flashdata('message', 'Agreement not found.');
+            $this->session->set_flashdata('messageClass', 'alert-danger');
+            redirect('agreement', 'refresh');
+            return;
+        }
+        
         $data = array(
             'agreement_location_id' => html_escape($this->input->post('agreement_location_id', TRUE)),
-            'agreement' => $this->manager->get_details('agreement', array('agreement_id' => $agreement_id)),
+            'agreement' => $agreement,
             'items' => $this->manager->get_details('agreement_item', array('agreement_id' => $agreement_id)),
             'locations' => $this->manager->get_details('agreement_location', array('agreement_id' => $agreement_id)),
             'list' => $this->manager->get_chainage($agreement_id)
         );
+        
         if (!$data['list']) {
             $data['list'] = array();
         }
-        $this->load->view('section/chainage', ['data' => $data]);
-        $this->load->view('footer');
+        
+        // Load header with Bootstrap 5
+        $this->load->view('header_bootstrap5');
+        $this->load->view('section/chainage_bootstrap5', ['data' => $data]);
+        $this->load->view('footer_bootstrap5');
     }
 
     public function add_chainage()
     {
-        $agreement_id = html_escape($this->input->post('agreement_id', TRUE));
-        $chainage_item_id = $this->input->post('chainage_item_id[]', TRUE);
-        $chainage_agr_loc_id = html_escape($this->input->post('chainage_agr_loc_id', TRUE));
-        $chainage = $this->input->post('chainage[]', TRUE);
-        $chainage_quantity = $this->input->post('chainage_quantity[]', TRUE);
-
-        $tetrapod_id = $this->manager->get_details('agreement_item', array('agreement_id' => $agreement_id, 'item' => 'Tetrapod'))[0]->agreement_item_id;
-
-        $noItem = count($chainage_item_id) / count($chainage);
-        $rows = array();
-        $r = 0;
-        $i = 0;
-        while ($r < count($chainage)) { // Loop over rows
-
-            $c = 0;
-            while ($c < $noItem) { // Loop over columns
-                if (isset($tetrapod_id)) { // Convert tetrapod nos to weight
-                    if ($tetrapod_id == $chainage_item_id[$i]) {
-                        $chainage_quantity[$i] = $chainage_quantity[$i] * 2;
-                    }
-                }
-                array_push($rows, array(
-                    'chainage' => html_escape($chainage[$r]),
-                    'chainage_agr_loc_id' => $chainage_agr_loc_id,
-                    'chainage_item_id' => html_escape($chainage_item_id[$i]),
-                    'chainage_quantity' => html_escape($chainage_quantity[$i])
-                ));
-                $i++;
-                $c++;
+        // Check if this is a POST request (form submission)
+        if ($this->input->method() === 'post') {
+            // Validate CSRF token
+            if (!$this->security->csrf_verify()) {
+                $this->session->set_flashdata('message', 'Security token mismatch. Please try again.');
+                $this->session->set_flashdata('messageClass', 'alert-danger');
+                redirect('agreement', 'refresh');
+                return;
             }
-            $r++;
-        }
 
-        $this->manager->delete_data('chainage', array('chainage_agr_loc_id' => $chainage_agr_loc_id));
+            // Get and sanitize form data
+            $agreement_id = html_escape($this->input->post('agreement_id', TRUE));
+            $chainage_item_id = $this->input->post('chainage_item_id[]', TRUE);
+            $chainage_agr_loc_id = html_escape($this->input->post('chainage_agr_loc_id', TRUE));
+            $chainage = $this->input->post('chainage[]', TRUE);
+            $chainage_quantity = $this->input->post('chainage_quantity[]', TRUE);
 
-        $q = $this->manager->insert_batch('chainage', $rows);
+            // Validate required fields
+            if (empty($agreement_id) || empty($chainage_agr_loc_id) || empty($chainage) || empty($chainage_quantity)) {
+                $this->session->set_flashdata('message', 'Please fill in all required fields.');
+                $this->session->set_flashdata('messageClass', 'alert-warning');
+                redirect("chainage/$agreement_id", 'refresh');
+                return;
+            }
 
-        if ($q) {
-            $this->session->set_flashdata('message', 'Congratulation! Chainage added successfully.');
-            $this->session->set_flashdata('messageClass', 'alert-success');
+            try {
+                // Get tetrapod item ID for weight conversion
+                $tetrapod_items = $this->manager->get_details('agreement_item', array('agreement_id' => $agreement_id, 'item' => 'Tetrapod'));
+                $tetrapod_id = !empty($tetrapod_items) ? $tetrapod_items[0]->agreement_item_id : null;
+
+                $noItem = count($chainage_item_id) / count($chainage);
+                $rows = array();
+                $r = 0;
+                $i = 0;
+                
+                while ($r < count($chainage)) { // Loop over rows
+                    $c = 0;
+                    while ($c < $noItem) { // Loop over columns
+                        if (isset($tetrapod_id)) { // Convert tetrapod nos to weight
+                            if ($tetrapod_id == $chainage_item_id[$i]) {
+                                $chainage_quantity[$i] = $chainage_quantity[$i] * 2;
+                            }
+                        }
+                        array_push($rows, array(
+                            'chainage' => html_escape($chainage[$r]),
+                            'chainage_agr_loc_id' => $chainage_agr_loc_id,
+                            'chainage_item_id' => html_escape($chainage_item_id[$i]),
+                            'chainage_quantity' => html_escape($chainage_quantity[$i])
+                        ));
+                        $i++;
+                        $c++;
+                    }
+                    $r++;
+                }
+
+                // Delete existing chainage for this location
+                $this->manager->delete_data('chainage', array('chainage_agr_loc_id' => $chainage_agr_loc_id));
+
+                // Insert new chainage data
+                $q = $this->manager->insert_batch('chainage', $rows);
+
+                if ($q) {
+                    $this->session->set_flashdata('message', 'Congratulations! Chainage added successfully.');
+                    $this->session->set_flashdata('messageClass', 'alert-success');
+                } else {
+                    $this->session->set_flashdata('message', 'Failed to add chainage. Please try again.');
+                    $this->session->set_flashdata('messageClass', 'alert-danger');
+                }
+            } catch (Exception $e) {
+                $this->session->set_flashdata('message', 'An error occurred: ' . $e->getMessage());
+                $this->session->set_flashdata('messageClass', 'alert-danger');
+            }
+            
+            redirect("chainage/$agreement_id", 'refresh');
         } else {
-            $this->session->set_flashdata('message', 'Failed to add chainage. Please try again.');
-            $this->session->set_flashdata('messageClass', 'alert-danger');
+            // If it's a GET request, redirect to agreement page
+            redirect('agreement', 'refresh');
         }
-        redirect("chainage/$agreement_id", 'refresh');
     }
 
     public function vehicle($vehicle_id = '')
