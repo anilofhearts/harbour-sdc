@@ -88,6 +88,7 @@ $route['agreementForm/(:num)'] = 'section/agreementForm/$1';
 $route['addAgreement'] = 'section/addAgreement';
 $route['chainage/(:num)'] = 'section/chainage/$1';
 $route['add_chainage'] = 'section/add_chainage';
+$route['test-bootstrap'] = 'section/test_bootstrap';
 
 $route['vehicle'] = 'section/vehicle';
 $route['addUpdateVehicle'] = 'section/addUpdateVehicle';

@@ -396,10 +396,14 @@ class Section extends MY_Controller {
             $data['list'] = array();
         }
         
-        // Load header with Bootstrap 5
-        $this->load->view('header_bootstrap5');
-        $this->load->view('section/chainage_bootstrap5', ['data' => $data]);
-        $this->load->view('footer_bootstrap5');
+        // Load the chainage view (header already loaded by MY_Controller)
+        $this->load->view('section/chainage_hybrid', ['data' => $data]);
+        $this->load->view('footer');
+    }
+
+    public function test_bootstrap()
+    {
+        $this->load->view('debug_bootstrap');
     }
 
     public function add_chainage()
