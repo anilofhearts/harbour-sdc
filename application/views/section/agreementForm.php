@@ -144,9 +144,13 @@
               
             <!-- Other parts of the form go here -->
 
-            <div class="row">
-                <?= anchor('section/agreement', 'Back', array('class' => 'btn btn-secondary text-white')); ?>
-                <?= form_submit('submit', 'Save Agreement', ['class' => 'btn btn-primary']); ?>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="d-flex gap-2">
+                        <?= anchor('section/agreement', 'Back', array('class' => 'btn btn-secondary text-white')); ?>
+                        <?= form_submit('submit', 'Save Agreement', ['class' => 'btn btn-primary']); ?>
+                    </div>
+                </div>
             </div>
             
             <?= form_close(); ?>
