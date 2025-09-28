@@ -141,8 +141,134 @@
                     </div>
                 </div>
               </div>
-              
-            <!-- Other parts of the form go here -->
+
+            <!-- Agreement Items Section -->
+            <div class="card-body alert alert-info mt-3">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <h4 class="alert-heading">Agreement Items</h4>
+                        <p class="mb-0">Add items that will be part of this agreement.</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="button" class="btn btn-success" onclick="addItemRow()">
+                            <i class="bi bi-plus"></i> Add Item
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <table id="itemsTable" class="table table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 50px;">Action</th>
+                                    <th>Item Name</th>
+                                    <th>Unit</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($data['item'])): ?>
+                                    <?php foreach ($data['item'] as $index => $item): ?>
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="item[]" value="<?= html_escape($item->item) ?>" class="form-control" required>
+                                                <input type="hidden" name="agreement_item_id[]" value="<?= html_escape($item->agreement_item_id) ?>">
+                                            </td>
+                                            <td>
+                                                <input type="text" name="unit[]" value="<?= html_escape($item->unit) ?>" class="form-control" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="rate[]" value="<?= html_escape($item->rate) ?>" class="form-control" step="0.01" min="0" required>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="item[]" value="" class="form-control" placeholder="Enter item name" required>
+                                            <input type="hidden" name="agreement_item_id[]" value="">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="unit[]" value="" class="form-control" placeholder="Unit" required>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="rate[]" value="0.00" class="form-control" step="0.01" min="0" required>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agreement Locations Section -->
+            <div class="card-body alert alert-warning mt-3">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <h4 class="alert-heading">Agreement Locations</h4>
+                        <p class="mb-0">Add locations where this agreement will be executed.</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="button" class="btn btn-success" onclick="addLocationRow()">
+                            <i class="bi bi-plus"></i> Add Location
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <table id="locationsTable" class="table table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 50px;">Action</th>
+                                    <th>Location Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($data['loc'])): ?>
+                                    <?php foreach ($data['loc'] as $index => $location): ?>
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeLocationRow(this)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="location[]" value="<?= html_escape($location->location) ?>" class="form-control" required>
+                                                <input type="hidden" name="agreement_location_id[]" value="<?= html_escape($location->agreement_location_id) ?>">
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeLocationRow(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="location[]" value="" class="form-control" placeholder="Enter location name" required>
+                                            <input type="hidden" name="agreement_location_id[]" value="">
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
             <div class="row mt-4">
                 <div class="col-md-12">
@@ -166,7 +292,10 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        window.ttlAgr = parseFloat(document.getElementById('total').value);
+        // Check if total element exists before accessing it
+        if (document.getElementById('total')) {
+            window.ttlAgr = parseFloat(document.getElementById('total').value);
+        }
 
         // Prevent spaces in fields
         $('input[name="agreement_no"], input[name="short_code"], input[name="amount"], input[name="agreement"]').on('keypress', function(e) {
@@ -178,5 +307,83 @@
         // Additional client-side validation can be added here
     });
 
-    // Scripts for dynamic row operations, AJAX requests, etc.
+    // Function to add new item row
+    function addItemRow() {
+        var table = document.getElementById('itemsTable');
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        
+        cell1.innerHTML = '<button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)"><i class="bi bi-trash"></i></button>';
+        cell2.innerHTML = '<input type="text" name="item[]" value="" class="form-control" placeholder="Enter item name" required><input type="hidden" name="agreement_item_id[]" value="">';
+        cell3.innerHTML = '<input type="text" name="unit[]" value="" class="form-control" placeholder="Unit" required>';
+        cell4.innerHTML = '<input type="number" name="rate[]" value="0.00" class="form-control" step="0.01" min="0" required>';
+    }
+
+    // Function to remove item row
+    function removeItemRow(button) {
+        var table = document.getElementById('itemsTable');
+        if (table.rows.length > 2) { // Keep at least one row
+            button.closest('tr').remove();
+        } else {
+            alert('At least one item is required.');
+        }
+    }
+
+    // Function to add new location row
+    function addLocationRow() {
+        var table = document.getElementById('locationsTable');
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        
+        cell1.innerHTML = '<button type="button" class="btn btn-sm btn-danger" onclick="removeLocationRow(this)"><i class="bi bi-trash"></i></button>';
+        cell2.innerHTML = '<input type="text" name="location[]" value="" class="form-control" placeholder="Enter location name" required><input type="hidden" name="agreement_location_id[]" value="">';
+    }
+
+    // Function to remove location row
+    function removeLocationRow(button) {
+        var table = document.getElementById('locationsTable');
+        if (table.rows.length > 2) { // Keep at least one row
+            button.closest('tr').remove();
+        } else {
+            alert('At least one location is required.');
+        }
+    }
+
+    // Form validation before submission
+    document.querySelector('form').addEventListener('submit', function(e) {
+        var itemInputs = document.querySelectorAll('input[name="item[]"]');
+        var locationInputs = document.querySelectorAll('input[name="location[]"]');
+        
+        // Check if at least one item is filled
+        var hasValidItem = false;
+        itemInputs.forEach(function(input) {
+            if (input.value.trim() !== '') {
+                hasValidItem = true;
+            }
+        });
+        
+        if (!hasValidItem) {
+            alert('Please add at least one item.');
+            e.preventDefault();
+            return;
+        }
+        
+        // Check if at least one location is filled
+        var hasValidLocation = false;
+        locationInputs.forEach(function(input) {
+            if (input.value.trim() !== '') {
+                hasValidLocation = true;
+            }
+        });
+        
+        if (!hasValidLocation) {
+            alert('Please add at least one location.');
+            e.preventDefault();
+            return;
+        }
+    });
 </script>
