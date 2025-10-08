@@ -238,9 +238,8 @@ class Section extends MY_Controller {
         }
         $this->form_validation->set_rules('agreement', 'Agreement', 'trim|required|callback_check_spaces_only');
         $this->form_validation->set_rules('amount', 'Amount', 'numeric|required');
-        $this->form_validation->set_rules('period_of_commencement', 'Period of Commencement', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
-        $this->form_validation->set_rules('contractor_email_id', 'Email ID', 'valid_email|required');
-        $this->form_validation->set_rules('name_of_contractor', 'Name of Contractor', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
+        $this->form_validation->set_rules('short_code', 'Short Code', 'trim|required|callback_check_spaces_only');
+        $this->form_validation->set_rules('type_of_work', 'Type of Work', 'trim|required');
 
         if ($this->form_validation->run() == TRUE) {
             $data = array(
@@ -250,14 +249,8 @@ class Section extends MY_Controller {
                 'date_of_commencement' => html_escape($this->input->post('date_of_commencement', TRUE)),
                 'exp_date_of_completion' => html_escape($this->input->post('exp_date_of_completion', TRUE)),
                 'type_of_work' => html_escape($this->input->post('type_of_work', TRUE)),
-                'name_of_contractor' => html_escape($this->input->post('name_of_contractor', TRUE)),
-                'address' => html_escape($this->input->post('address', TRUE)),
-                'contractor_email_id' => html_escape($this->input->post('contractor_email_id', TRUE)),
-                'contractor_phone_no' => html_escape($this->input->post('contractor_phone_no', TRUE)),
-                'period_of_commencement' => html_escape($this->input->post('period_of_commencement', TRUE)),
                 'short_code' => html_escape($this->input->post('short_code', TRUE)),
-                'section_id' => html_escape($this->input->post('section_id', TRUE)),
-                'department' => html_escape($this->input->post('department', TRUE))
+                'section_id' => $this->user['section_id']
             );
 
             if ($agreement_id > 0) {
@@ -273,23 +266,18 @@ class Section extends MY_Controller {
                 $agreement_item_id = $this->input->post('agreement_item_id[]', TRUE);
                 $item = $this->input->post('item[]', TRUE);
                 $unit = $this->input->post('unit[]', TRUE);
-                $estimated_quantity = $this->input->post('estimated_quantity[]', TRUE);
-                $estimated_rate = $this->input->post('estimated_rate[]', TRUE);
+                $rate = $this->input->post('rate[]', TRUE);
 
                 $items = array();
                 $i = 0;
                 while ($i < count($item)) {
-                    if ($item[$i] == "Tetrapod") {
-                        $estimated_quantity[$i] = $estimated_quantity[$i] * 2;
-                        $estimated_rate[$i] = $estimated_rate[$i] / 2;
-                    }
+                    // Use 'rate' field from form - the database column name should match
                     array_push($items, array(
                         'agreement_item_id' => isset($agreement_item_id[$i]) ? html_escape($agreement_item_id[$i]) : '',
                         'agreement_id' => html_escape($agreement_id),
                         'item' => html_escape($item[$i]),
                         'unit' => html_escape($unit[$i]),
-                        'estimated_quantity' => html_escape($estimated_quantity[$i]),
-                        'estimated_rate' => html_escape($estimated_rate[$i])
+                        'rate' => html_escape($rate[$i])
                     ));
                     $i++;
                 }
@@ -307,12 +295,11 @@ class Section extends MY_Controller {
                     $x++;
                 }
 
-                if ($agreement_id > 0) {
-                    $this->manager->log('Deleting to update agreement_item', $agreement_id);
-                    $this->manager->delete_data('agreement_item', array('agreement_id' => $agreement_id));
-                    $this->manager->log('Deleting to update agreement_location', $agreement_id);
-                    $this->manager->delete_data('agreement_location', array('agreement_id' => $agreement_id));
-                }
+                // Delete existing items and locations before re-inserting
+                $this->manager->log('Deleting to update agreement_item', $agreement_id);
+                $this->manager->delete_data('agreement_item', array('agreement_id' => $agreement_id));
+                $this->manager->log('Deleting to update agreement_location', $agreement_id);
+                $this->manager->delete_data('agreement_location', array('agreement_id' => $agreement_id));
 
                 $this->manager->log('Inserting agreement_item', $items);
                 $q1 = $this->manager->insert_batch('agreement_item', $items);
@@ -323,12 +310,14 @@ class Section extends MY_Controller {
                 if (!$q1) {
                     $this->session->set_flashdata('message', 'Failed to add/update items. Please try again.');
                     $this->session->set_flashdata('messageClass', 'alert-danger');
-                    $this->agreementForm();
+                    $this->agreementForm($agreement_id);
+                    return;
                 }
                 if (!$q2) {
                     $this->session->set_flashdata('message', 'Failed to add/update locations. Please try again.');
                     $this->session->set_flashdata('messageClass', 'alert-danger');
-                    $this->agreementForm();
+                    $this->agreementForm($agreement_id);
+                    return;
                 }
 
                 $this->session->set_flashdata('message', 'Congratulation! Agreement added/updated successfully.');
@@ -337,10 +326,10 @@ class Section extends MY_Controller {
             } else {
                 $this->session->set_flashdata('message', 'Failed to add/update agreement. Please try again.');
                 $this->session->set_flashdata('messageClass', 'alert-danger');
-                $this->agreementForm();
+                $this->agreementForm($agreement_id);
             }
         } else {
-            $this->agreementForm();
+            $this->agreementForm($agreement_id);
         }
     }
 
