@@ -104,9 +104,11 @@
               <div class="card col-md-6">
                 <div class="card-body alert alert-danger">
                   <h4 class="card-title">Item Details</h4>
-                  <div class="row">
-                    <input type="button" value="Add Row" onclick="addItemRow()" />
-                    <input type="button" value="Delete Row" onclick="deleteItemRow()" />
+                  <div class="row mb-2">
+                    <div class="col-12">
+                      <input type="button" value="Add Row" onclick="addItemRow()" class="btn btn-success btn-sm mr-2" />
+                      <input type="button" value="Delete Row" onclick="deleteItemRow()" class="btn btn-danger btn-sm" />
+                    </div>
                   </div>
                   <div class="row">
                     <table id="itemTable" width="100%" border="0">
@@ -181,9 +183,11 @@
               <div class="card col-md-6">
                 <div class="card-body alert alert-danger">
                   <h4 class="card-title">Location Details</h4>
-                  <div class="row">
-                    <input type="button" value="Add Row" onclick="addLocRow()" />
-                    <input type="button" value="Delete Row" onclick="deleteLocRow()" />
+                  <div class="row mb-2">
+                    <div class="col-12">
+                      <input type="button" value="Add Row" onclick="addLocRow()" class="btn btn-success btn-sm mr-2" />
+                      <input type="button" value="Delete Row" onclick="deleteLocRow()" class="btn btn-danger btn-sm" />
+                    </div>
                   </div>
                   <div class="row">
                     <table id="locTable">
@@ -280,8 +284,10 @@
                     </div>
                 </div>
                 <div class="row">
-                    <?php echo anchor('section/agreement', 'Back', array('class'=>'btn btn-secondary text-white')); ?>
-                    <?php echo form_submit('submit', 'Save Agreement', ['class'=>'btn btn-primary']); ?>
+                    <div class="col-12">
+                        <?php echo anchor('section/agreement', 'Back', array('class'=>'btn btn-secondary text-white mr-2')); ?>
+                        <?php echo form_submit('submit', 'Save Agreement', ['class'=>'btn btn-primary']); ?>
+                    </div>
                 </div>
             </div>
             <?php echo form_close(); ?>
