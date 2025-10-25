@@ -398,10 +398,10 @@ $config['encryption_key'] = '';
 
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
-$config['sess_expiration'] = 28800;
+$config['sess_expiration'] = 86400; // 24 hours (86400 seconds)
 $config['sess_save_path'] = sys_get_temp_dir();
 $config['sess_match_ip'] = TRUE;
-$config['sess_time_to_update'] = 1800;
+$config['sess_time_to_update'] = 3600; // 1 hour (3600 seconds)
 $config['sess_regenerate_destroy'] = TRUE;
 $config['cookie_prefix']    = '';
 $config['cookie_domain']    = '';
@@ -425,10 +425,10 @@ $config['cookie_samesite']  = 'Lax'; // Options: 'Lax', 'Strict', 'None'
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['sess_time_to_update'] = 1800;
+$config['sess_time_to_update'] = 3600; // 1 hour (3600 seconds)
 $config['sess_regenerate_destroy'] = TRUE;
 $config['sess_match_ip'] = TRUE;
-$config['sess_expiration'] = 28800;
+$config['sess_expiration'] = 86400; // 24 hours (86400 seconds)
 $config['sess_cookie_name'] = 'ci_session';
 $config['cookie_prefix']	= '';
 $config['cookie_domain'] = '';
@@ -481,7 +481,7 @@ $config['global_xss_filtering'] = FALSE;
 $config['csrf_protection'] = FALSE;
 $config['csrf_token_name'] = 'ci_csrf_token';
 $config['csrf_cookie_name'] = 'ci_csrf_cookie';
-$config['csrf_expire'] = 7200;
+$config['csrf_expire'] = 86400; // 24 hours (86400 seconds)
 $config['csrf_regenerate'] = FALSE;
 $config['csrf_exclude_uris'] = array();
 $config['sess_driver'] = 'files';
