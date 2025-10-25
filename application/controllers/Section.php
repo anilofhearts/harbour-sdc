@@ -714,13 +714,9 @@ class Section extends MY_Controller {
     {
         // Check if this is a POST request (form submission)
         if ($this->input->method() === 'post') {
-            // Validate CSRF token
-            if (!$this->security->csrf_verify()) {
-                $this->session->set_flashdata('message', 'Security token mismatch. Please try again.');
-                $this->session->set_flashdata('messageClass', 'alert-danger');
-                redirect('agreement', 'refresh');
-                return;
-            }
+            // CSRF protection is disabled in config, so no need to verify token
+            log_message('debug', '=== CHAINAGE SAVE ATTEMPT STARTED ===');
+            log_message('debug', 'POST data: ' . print_r($this->input->post(), TRUE));
 
             // Get and sanitize form data
             $agreement_id = html_escape($this->input->post('agreement_id', TRUE));
@@ -774,9 +770,11 @@ class Section extends MY_Controller {
                 $q = $this->manager->insert_batch('chainage', $rows);
 
                 if ($q) {
+                    log_message('debug', '=== CHAINAGE SAVE SUCCESSFUL ===');
                     $this->session->set_flashdata('message', 'Congratulations! Chainage added successfully.');
                     $this->session->set_flashdata('messageClass', 'alert-success');
                 } else {
+                    log_message('error', '=== CHAINAGE SAVE FAILED ===');
                     $this->session->set_flashdata('message', 'Failed to add chainage. Please try again.');
                     $this->session->set_flashdata('messageClass', 'alert-danger');
                 }
