@@ -286,7 +286,6 @@ document.getElementById("snap").setAttribute(
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
         <div class="col-md-3">
-
             <div class="card" style="position: sticky; top: 20px;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
