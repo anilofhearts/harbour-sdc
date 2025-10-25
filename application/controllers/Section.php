@@ -20,45 +20,65 @@ class Section extends MY_Controller {
 
     public function index()
     {
-        $agreement = $this->manager->get_details('agreement', array('section_id' => $this->user['section_id'], 'date_of_completion' => null));
-        if ($agreement) {
-            $chainage = $this->manager->get_chainage($agreement[0]->agreement_id);
-            $est_ttl_cost = $this->manager->est_ttl_cost($agreement[0]->agreement_id);
-            $ttl_exp = $this->manager->ttl_exp_fixed($agreement[0]->agreement_id);
+        try {
+            // Debug: Log the section_id being used
+            log_message('debug', 'Section index - section_id: ' . $this->user['section_id']);
+            
+            $agreement = $this->manager->get_details('agreement', array('section_id' => $this->user['section_id'], 'date_of_completion' => null));
+            
+            if ($agreement) {
+                log_message('debug', 'Section index - agreement found: ' . $agreement[0]->agreement_id);
+                
+                $chainage = $this->manager->get_chainage($agreement[0]->agreement_id);
+                $est_ttl_cost = $this->manager->est_ttl_cost($agreement[0]->agreement_id);
+                $ttl_exp = $this->manager->ttl_exp_fixed($agreement[0]->agreement_id);
 
-            if ($chainage) {
-                foreach ($chainage as $cng) {
-                    $trip = $this->manager->get_details('trip', array(
-                        'agreement_location_id' => $cng->agreement_location_id,
-                        'agreement_item_id' => $cng->agreement_item_id,
-                        'onsite_chainage' => $cng->chainage
-                    ));
+                if ($chainage) {
+                    foreach ($chainage as $cng) {
+                        $trip = $this->manager->get_details('trip', array(
+                            'agreement_location_id' => $cng->agreement_location_id,
+                            'agreement_item_id' => $cng->agreement_item_id,
+                            'onsite_chainage' => $cng->chainage
+                        ));
 
-                    $wt = 0;
-                    $net_weight = 0;
-                    if ($trip) {
-                        foreach ($trip as $tp) {
-                            $wt = ($tp->in_weight - $tp->out_weight) * (1 - $tp->onsite_loss / 100);
-                            $net_weight += $wt;
+                        $wt = 0;
+                        $net_weight = 0;
+                        if ($trip) {
+                            foreach ($trip as $tp) {
+                                $wt = ($tp->in_weight - $tp->out_weight) * (1 - $tp->onsite_loss / 100);
+                                $net_weight += $wt;
+                            }
                         }
+
+                        $cng->dumped = $net_weight;
                     }
-
-                    $cng->dumped = $net_weight;
                 }
-            }
 
-            $data = array(
-                'role' => html_escape($_SESSION['harbour']['role_id']),
-                'agreement' => $agreement,
-                'chainage' => $chainage,
-                'finprog' => round(($ttl_exp->ttl_exp * 100) / $est_ttl_cost->ttl_cost, 2),
-                'stats' => $this->stats($agreement[0]->agreement_id)
-            );
-        } else {
-            redirect('agreement', 'refresh');
+                $data = array(
+                    'role' => html_escape($_SESSION['harbour']['role_id']),
+                    'agreement' => $agreement,
+                    'chainage' => $chainage,
+                    'finprog' => round(($ttl_exp->ttl_exp * 100) / $est_ttl_cost->ttl_cost, 2),
+                    'stats' => $this->stats($agreement[0]->agreement_id)
+                );
+                
+                log_message('debug', 'Section index - loading dashboard view');
+                $this->load->view('section/dashboard', ['data' => $data]);
+                $this->load->view('footer');
+            } else {
+                log_message('debug', 'Section index - no agreement found, redirecting to agreement');
+                redirect('agreement', 'refresh');
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Section index error: ' . $e->getMessage());
+            log_message('error', 'Section index trace: ' . $e->getTraceAsString());
+            
+            // Show a simple error message instead of blank page
+            echo "<h1>Error Loading Section Dashboard</h1>";
+            echo "<p>An error occurred while loading the section dashboard.</p>";
+            echo "<p>Error: " . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<p>Please check the logs for more details.</p>";
         }
-        $this->load->view('section/dashboard', ['data' => $data]);
-        $this->load->view('footer');
     }
 
     public function trip()
@@ -406,6 +426,67 @@ class Section extends MY_Controller {
     public function test_bootstrap()
     {
         $this->load->view('debug_bootstrap');
+    }
+
+    public function debug_test()
+    {
+        echo "<h1>Section Controller Debug Test</h1>";
+        
+        // Test 1: Check if manager model is loaded
+        echo "<h2>1. Manager Model Test</h2>";
+        if (isset($this->manager)) {
+            echo "✓ Manager model is loaded<br>";
+        } else {
+            echo "✗ Manager model is NOT loaded<br>";
+        }
+        
+        // Test 2: Check user data
+        echo "<h2>2. User Data Test</h2>";
+        if (isset($this->user)) {
+            echo "✓ User data is available<br>";
+            echo "Section ID: " . $this->user['section_id'] . "<br>";
+            echo "User ID: " . $this->user['user_id'] . "<br>";
+        } else {
+            echo "✗ User data is NOT available<br>";
+        }
+        
+        // Test 3: Check session
+        echo "<h2>3. Session Data Test</h2>";
+        if (isset($_SESSION['harbour'])) {
+            echo "✓ Session data is available<br>";
+            echo "Role: " . $_SESSION['harbour']['role_id'] . "<br>";
+            echo "Section ID: " . $_SESSION['harbour']['section_id'] . "<br>";
+        } else {
+            echo "✗ Session data is NOT available<br>";
+        }
+        
+        // Test 4: Test database connection
+        echo "<h2>4. Database Connection Test</h2>";
+        try {
+            $test_query = $this->db->query("SELECT 1 as test");
+            if ($test_query) {
+                echo "✓ Database connection is working<br>";
+            } else {
+                echo "✗ Database connection failed<br>";
+            }
+        } catch (Exception $e) {
+            echo "✗ Database error: " . $e->getMessage() . "<br>";
+        }
+        
+        // Test 5: Test agreement query
+        echo "<h2>5. Agreement Query Test</h2>";
+        try {
+            $agreement = $this->manager->get_details('agreement', array('section_id' => $this->user['section_id'], 'date_of_completion' => null));
+            if ($agreement) {
+                echo "✓ Agreement found: " . $agreement[0]->agreement_id . "<br>";
+            } else {
+                echo "✗ No agreement found for section ID: " . $this->user['section_id'] . "<br>";
+            }
+        } catch (Exception $e) {
+            echo "✗ Agreement query error: " . $e->getMessage() . "<br>";
+        }
+        
+        echo "<h2>Debug Complete</h2>";
     }
 
     public function add_chainage()
