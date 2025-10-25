@@ -20,6 +20,16 @@ $this->load->view("library/firebase_api");
  ?>
 <!-- First, include the Webcam.js JavaScript Library -->
 <script type="text/javascript" src="<?php echo base_url() ?>public/webcam/webcam.min.js"></script>
+<style>
+@media (max-width: 768px) {
+    .trip-main-content { order: 2; }
+    .trip-sidebar { order: 1; margin-bottom: 20px; }
+}
+@media (min-width: 769px) {
+    .trip-main-content { flex: 0 0 auto; }
+    .trip-sidebar { flex: 0 0 auto; }
+}
+</style>
 <!--<script type="text/javascript" src="<?=base_url()?>public/html2canvas/html2canvas-master/dist/html2canvas.js"></script>-->
 <!--<script src="<?=base_url()?>public/assets/libs/select2/dist/js/select2.full.min.js"></script>-->
 <script src="<?=base_url()?>public/assets/libs/select2/dist/js/select2.min.js"></script>
@@ -110,8 +120,8 @@ $this->load->view("library/firebase_api");
     </div>
     <!-- Modal -->
 
-    <div class="row">
-        <div class="col-lg-9 col-md-8">
+    <div class="row no-gutters d-flex">
+        <div class="col-xl-9 col-lg-8 col-md-7 pr-2 trip-main-content">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -280,8 +290,8 @@ document.getElementById("snap").setAttribute(
         <!-- ============================================================== -->
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
-        <div class="col-lg-3 col-md-4">
-            <div class="card" style="position: sticky; top: 20px;">
+        <div class="col-xl-3 col-lg-4 col-md-5 pl-2 trip-sidebar">
+            <div class="card" style="position: sticky; top: 20px; min-height: fit-content;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
                     <div class="row">
