@@ -262,6 +262,45 @@ $query->free_result();
     
   }
 
+  // Paginated version of get_trip for better performance
+  public function get_trip_paginated($array, $page = 1)
+  {
+    $per_page = 50;
+    $offset = ($page - 1) * $per_page;
+    
+    $this->db->where($array);
+    $this->db->from('trip');
+    $this->db->join('agreement', 'trip.agreement_id = agreement.agreement_id', 'left');
+    $this->db->join('vehicle', 'vehicle.vehicle_id = trip.trip_vehicle_id', 'left');
+    $this->db->join('quarry', 'quarry.quarry_id = trip.trip_quarry_id', 'left');
+    $this->db->join('agreement_location', 'agreement_location.agreement_location_id = trip.agreement_location_id', 'left');
+    $this->db->join('agreement_item', 'agreement_item.agreement_item_id = trip.agreement_item_id', 'left');
+    $this->db->order_by('trip.in_datetime', 'DESC');
+    $this->db->limit($per_page, $offset);
+    $q = $this->db->get();
+
+    if ($q->num_rows() > 0) {
+      return $q->result();
+      $q->free_result();
+    }
+    
+    return array();
+  }
+
+  // Count total trips for pagination
+  public function count_trips($array)
+  {
+    $this->db->where($array);
+    $this->db->from('trip');
+    $this->db->join('agreement', 'trip.agreement_id = agreement.agreement_id', 'left');
+    $this->db->join('vehicle', 'vehicle.vehicle_id = trip.trip_vehicle_id', 'left');
+    $this->db->join('quarry', 'quarry.quarry_id = trip.trip_quarry_id', 'left');
+    $this->db->join('agreement_location', 'agreement_location.agreement_location_id = trip.agreement_location_id', 'left');
+    $this->db->join('agreement_item', 'agreement_item.agreement_item_id = trip.agreement_item_id', 'left');
+    
+    return $this->db->count_all_results();
+  }
+
   // Vehicle list which are IN but not ON SITE
   public function vehicle_in($agreement_id)
   {

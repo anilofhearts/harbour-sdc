@@ -155,8 +155,14 @@
         <div class="card col-md-12">
             <div class="card-body">
                 <div class="row">
-                    <h4 class="card-title">Report</h4>
-
+                    <div class="col-md-6">
+                        <h4 class="card-title">Report</h4>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <?php if(isset($trip) && $trip): ?>
+                            <small class="text-muted">Showing <?php echo count($trip); ?> records</small>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="row">
                     <?php //echo "trip-"; print_r($trip);?>
@@ -199,6 +205,15 @@
                             <?php endforeach;} ?>
                         </tbody>
                     </table>
+                    
+                    <!-- Pagination Links -->
+                    <?php if(isset($pagination) && $pagination): ?>
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <?php echo $pagination; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

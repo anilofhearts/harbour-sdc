@@ -1035,6 +1035,9 @@ public function deleteWork($id = null)
 
     public function report()
     {
+        // Load pagination library
+        $this->load->library('pagination');
+        
         $agreement = $this->manager->get_details('agreement', array('section_id'=>$this->user['section_id']));
         if(isset($agreement)) {
             $where_agr = array('agreement_id'=>$agreement[0]->agreement_id);
@@ -1048,6 +1051,8 @@ public function deleteWork($id = null)
             $agreement_item_id = html_escape($this->input->post('agreement_item_id', TRUE));
             $onsite_chainage = html_escape($this->input->post('onsite_chainage', TRUE));
             $card_no = html_escape($this->input->post('card_no', TRUE));
+            $date_from = html_escape($this->input->post('date_from', TRUE));
+            $date_to = html_escape($this->input->post('date_to', TRUE));
 
             $fields = [];
             $fields['section_id'] = $this->user['section_id'];
@@ -1056,8 +1061,34 @@ public function deleteWork($id = null)
             if($agreement_item_id) $fields['trip.agreement_item_id'] = $agreement_item_id;
             if($onsite_chainage) $fields['onsite_chainage'] = $onsite_chainage;
             if($card_no) $fields['card_no'] = $card_no;
+            if($date_from) $fields['DATE(trip.in_datetime) >='] = $date_from;
+            if($date_to) $fields['DATE(trip.in_datetime) <='] = $date_to;
 
-            $trip = $this->manager->get_trip($fields);
+            // Get paginated trips
+            $trip = $this->manager->get_trip_paginated($fields, $this->input->get('page', TRUE));
+            
+            // Get total count for pagination
+            $total_trips = $this->manager->count_trips($fields);
+            
+            // Configure pagination
+            $config['base_url'] = base_url('section/report');
+            $config['total_rows'] = $total_trips;
+            $config['per_page'] = 50; // Show 50 records per page
+            $config['page_query_string'] = TRUE;
+            $config['query_string_segment'] = 'page';
+            $config['full_tag_open'] = '<nav><ul class="pagination">';
+            $config['full_tag_close'] = '</ul></nav>';
+            $config['first_link'] = 'First';
+            $config['last_link'] = 'Last';
+            $config['next_link'] = 'Next';
+            $config['prev_link'] = 'Previous';
+            $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+            $config['cur_tag_close'] = '</span></li>';
+            $config['num_tag_open'] = '<li class="page-item">';
+            $config['num_tag_close'] = '</li>';
+            $config['attributes'] = array('class' => 'page-link');
+            
+            $this->pagination->initialize($config);
         } else {
             redirect('agreement','refresh');
         }
@@ -1068,7 +1099,8 @@ public function deleteWork($id = null)
             'location' => $location,
             'item' => $item,
             'trip' => $trip,
-            'data' => $fields
+            'data' => $fields,
+            'pagination' => $this->pagination->create_links()
         ]);
 
         $this->load->view('footer.php');
