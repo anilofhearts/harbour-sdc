@@ -309,8 +309,12 @@ class Section extends MY_Controller {
         $this->form_validation->set_rules('name_of_contractor', 'Name of Contractor', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
 
         // Debug: Log form submission
+        log_message('debug', '=== AGREEMENT SAVE ATTEMPT STARTED ===');
         log_message('debug', 'Agreement form submitted - Validation running');
         log_message('debug', 'POST data: ' . print_r($this->input->post(), TRUE));
+        log_message('debug', 'User session: ' . print_r($_SESSION['harbour'], TRUE));
+        log_message('debug', 'Request method: ' . $this->input->method());
+        log_message('debug', 'Request URI: ' . $this->input->server('REQUEST_URI'));
 
         if ($this->form_validation->run() == TRUE) {
             log_message('debug', 'Agreement form validation passed');
@@ -332,12 +336,17 @@ class Section extends MY_Controller {
             );
 
             if ($agreement_id > 0) {
+                log_message('debug', 'Updating existing agreement ID: ' . $agreement_id);
                 $this->manager->log('Updating agreement. id-' . $agreement_id, $data);
                 $q = $this->manager->update_data('agreement', $data, array('agreement_id' => $agreement_id));
+                log_message('debug', 'Update result: ' . ($q ? 'SUCCESS' : 'FAILED'));
             } else {
+                log_message('debug', 'Creating new agreement');
                 $data['agreement_no'] = html_escape($this->input->post('agreement_no', TRUE));
+                log_message('debug', 'Agreement data to insert: ' . print_r($data, TRUE));
                 $this->manager->log('Inserting agreement', $data);
                 $agreement_id = $this->manager->insert_data('agreement', $data);
+                log_message('debug', 'Insert result - Agreement ID: ' . $agreement_id);
             }
 
             if ($agreement_id > 0) {
@@ -386,11 +395,15 @@ class Section extends MY_Controller {
                 }
 
 
+                log_message('debug', 'Items to insert: ' . print_r($items, TRUE));
                 $this->manager->log('Inserting agreement_item', $items);
                 $q1 = $this->manager->insert_batch('agreement_item', $items);
+                log_message('debug', 'Items insert result: ' . ($q1 ? 'SUCCESS' : 'FAILED'));
 
+                log_message('debug', 'Locations to insert: ' . print_r($locations, TRUE));
                 $this->manager->log('Inserting agreement_location', $locations);
                 $q2 = $this->manager->insert_batch('agreement_location', $locations);
+                log_message('debug', 'Locations insert result: ' . ($q2 ? 'SUCCESS' : 'FAILED'));
 
                 if (!$q1) {
                     log_message('error', 'Failed to insert agreement items');
@@ -407,8 +420,10 @@ class Section extends MY_Controller {
                     return;
                 }
 
+                log_message('debug', '=== AGREEMENT SAVE SUCCESSFUL ===');
                 $this->session->set_flashdata('message', 'Congratulation! Agreement added/updated successfully.');
                 $this->session->set_flashdata('messageClass', 'alert-success');
+                log_message('debug', 'Redirecting to section/agreement');
                 redirect('section/agreement', 'refresh');
             } else {
                 $this->session->set_flashdata('message', 'Failed to add/update agreement. Please try again.');
@@ -416,6 +431,7 @@ class Section extends MY_Controller {
                 $this->agreementForm();
             }
         } else {
+            log_message('error', '=== AGREEMENT SAVE FAILED - VALIDATION ERRORS ===');
             log_message('debug', 'Agreement form validation failed');
             log_message('debug', 'Validation errors: ' . print_r($this->form_validation->error_array(), TRUE));
             $this->session->set_flashdata('message', 'Please correct the errors below and try again.');

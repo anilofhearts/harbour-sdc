@@ -162,7 +162,17 @@ $(function() {
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="<?php echo base_url(); ?>public/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <?php 
+                                $user_image = base_url() . 'public/assets/images/users/1.jpg';
+                                if (file_exists(FCPATH . 'public/assets/images/users/1.jpg')): ?>
+                                    <img src="<?php echo $user_image; ?>" alt="user" class="rounded-circle" width="31">
+                                <?php else: ?>
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 31px; height: 31px; font-size: 12px;">
+                                        <?php echo strtoupper(substr($userinfo->name, 0, 1)); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </a>
 <!--                             <div class="dropdown-menu dropdown-menu-right user-dd animated">
                                 <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i> My Profile</a>
                                 <div class="dropdown-divider"></div>
