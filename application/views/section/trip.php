@@ -21,36 +21,18 @@ $this->load->view("library/firebase_api");
 <!-- First, include the Webcam.js JavaScript Library -->
 <script type="text/javascript" src="<?php echo base_url() ?>public/webcam/webcam.min.js"></script>
 <style>
-/* Override admin template constraints for this page */
-.page-wrapper .container-fluid {
-    max-width: none !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+/* DEBUG: Add borders to see what's happening */
+.debug-border .col-md-9 {
+    border: 3px solid red !important;
+    background-color: rgba(255,0,0,0.1) !important;
 }
-
-/* Force Bootstrap grid to work properly */
-.trip-row {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    margin-left: -15px !important;
-    margin-right: -15px !important;
+.debug-border .col-md-3 {
+    border: 3px solid blue !important;
+    background-color: rgba(0,0,255,0.1) !important;
 }
-
-.trip-row > [class*="col-"] {
-    flex: 0 0 auto !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-}
-
-/* Ensure main content and sidebar maintain their widths */
-.trip-main-col {
-    flex: 0 0 75% !important;
-    max-width: 75% !important;
-}
-
-.trip-sidebar-col {
-    flex: 0 0 25% !important;
-    max-width: 25% !important;
+.debug-border .row {
+    border: 2px solid green !important;
+    background-color: rgba(0,255,0,0.1) !important;
 }
 
 /* Ensure images and canvases don't break layout */
@@ -59,15 +41,30 @@ $this->load->view("library/firebase_api");
     height: auto !important;
 }
 
-/* Responsive adjustments */
-@media (max-width: 991px) {
-    .trip-row {
-        flex-wrap: wrap !important;
-    }
-    .trip-main-col, .trip-sidebar-col {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
+/* Force proper Bootstrap behavior */
+.force-bootstrap .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin-right: -15px !important;
+    margin-left: -15px !important;
+}
+
+.force-bootstrap .col-md-9 {
+    flex: 0 0 75% !important;
+    max-width: 75% !important;
+    position: relative !important;
+    width: 100% !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
+}
+
+.force-bootstrap .col-md-3 {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+    position: relative !important;
+    width: 100% !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
 }
 </style>
 <!--<script type="text/javascript" src="<?=base_url()?>public/html2canvas/html2canvas-master/dist/html2canvas.js"></script>-->
@@ -160,8 +157,8 @@ $this->load->view("library/firebase_api");
     </div>
     <!-- Modal -->
 
-    <div class="trip-row">
-        <div class="trip-main-col">
+    <div class="row debug-border force-bootstrap">
+        <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -330,7 +327,7 @@ document.getElementById("snap").setAttribute(
         <!-- ============================================================== -->
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
-        <div class="trip-sidebar-col">
+        <div class="col-md-3">
             <div class="card" style="position: sticky; top: 20px; min-height: fit-content;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
