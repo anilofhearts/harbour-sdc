@@ -126,7 +126,7 @@ $this->load->view("library/firebase_api");
                     <div class="row">
 
                         <div class="form-group col-lg-2.3">
-                          <label><span>Vehicle No</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-success" data-toggle="modal" data-target="#vehicleForm"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add Vehicle"></i></span></label>
+                          <label><span>Vehicle No</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-success" data-toggle="modal" data-target="#vehicleForm" style="cursor: pointer;"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add Vehicle"></i></span></label>
 
                        <!-- Form Trip Start -->
 
@@ -311,13 +311,17 @@ document.getElementById("snap").setAttribute(
                                 <td class="text-danger">No. of Trips</td>
                                 <td><?=$data['trips_today']?></td>
                             </tr>
-                            <?php $itnet=0; if(isset($data['item_today'])) {foreach($data['item_today'] as $it):?>
+                            <?php $itnet=0; if(isset($data['item_today']) && !empty($data['item_today'])) {foreach($data['item_today'] as $it):?>
                             <tr>
                                 <td class="text-danger"><?=$it->item?></td>
                                 <td><?=round($it->net_weight/1000,3)?> T</td>
                                 <?php $itnet = $itnet+$it->net_weight; ?>
                             </tr>
-                            <?php endforeach; }?>
+                            <?php endforeach; } else { ?>
+                            <tr>
+                                <td class="text-danger" colspan="2">No completed trips today</td>
+                            </tr>
+                            <?php } ?>
                             <tr class="font-bold">
                                 <td class="text-danger">Total</td>
                                 <td><?=round($itnet/1000,3)?> T</td>
@@ -333,14 +337,18 @@ document.getElementById("snap").setAttribute(
                                 <td class="text-danger">No. of Trips</td>
                                 <td><?=$data['trips_all']?></td>
                             </tr>
-                            <?php $icnet=0; if(isset($data['item_cum'])) {
+                            <?php $icnet=0; if(isset($data['item_cum']) && !empty($data['item_cum'])) {
                                 foreach($data['item_cum'] as $ic):?>
                             <tr>
                                 <td class="text-danger"><?=$ic->item?></td>
                                 <td><?=round($ic->net_weight/1000,-1)?> T</td>
                                 <?php $icnet = $icnet+$ic->net_weight; ?>
                             </tr>
-                            <?php endforeach; }?>
+                            <?php endforeach; } else { ?>
+                            <tr>
+                                <td class="text-danger" colspan="2">No completed trips yet</td>
+                            </tr>
+                            <?php } ?>
                             <tr class="font-bold">
                                 <td class="text-danger">Total</td>
                                 <td><?=round($icnet/1000,-1)?> T</td>
@@ -422,19 +430,19 @@ document.getElementById("snap").setAttribute(
                                 <?php echo anchor("weightmentCard/$trip->trip_id", '<i class="mdi mdi-weight-kilogram"></i>', ['data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Weightmet Card']); ?>
                               </td>
                               <!-- Update Button -->
-                                <form action="<?= site_url("editTrip/$trip->trip_id"); ?>" method="post" style="display:inline;">
+                               <!--- <form action="<?= site_url("editTrip/$trip->trip_id"); ?>" method="post" style="display:inline;">
                                         <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Update">
                                             <i class="mdi mdi-check"></i>
                                         </button>
                                     </form>
-                                 <!-- Delete Button -->
-                                 <form action="<?= site_url("deleteTrip/$trip->trip_id"); ?>" method="post" style="display:inline;" onsubmit="return doConfirm();">
+                                  Delete Button -->
+                                 <!--- <form action="<?= site_url("deleteTrip/$trip->trip_id"); ?>" method="post" style="display:inline;" onsubmit="return doConfirm();">
                                         <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                         <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete">
                                             <i class="mdi mdi-delete"></i>
                                         </button>
-                                    </form>   
+                                    </form>   -->
                                                            </td>
                             </tr>
                             <?php endforeach;} ?>
@@ -467,6 +475,33 @@ setInterval(lockWeight,5000);
  $('#saver').prop("disabled",true);
    $('#lock_wt').prop("disabled",true);
      document.getElementById("weight").readOnly=true;
+
+// Initialize tooltips and ensure modal functionality
+$('[data-toggle="tooltip"]').tooltip();
+
+// Fallback for modal if bootstrap doesn't initialize properly
+$('[data-target="#vehicleForm"]').click(function(e) {
+    e.preventDefault();
+    $('#vehicleForm').modal('show');
+});
+
+// Ensure modal close buttons work properly
+$('#vehicleForm [data-dismiss="modal"]').click(function(e) {
+    e.preventDefault();
+    $('#vehicleForm').modal('hide');
+});
+
+// Close modal when clicking outside of it
+$('#vehicleForm').click(function(e) {
+    if (e.target === this) {
+        $('#vehicleForm').modal('hide');
+    }
+});
+
+// Clear form when modal is closed
+$('#vehicleForm').on('hidden.bs.modal', function() {
+    $(this).find('form')[0].reset();
+});
 });
 
 function stop_capture() {
@@ -656,7 +691,7 @@ function getchainage() {
     var location_id = document.getElementById('location').value;
     var item_id = document.getElementById('item').value;
     $.ajax({
-        url:'getChainage',
+        url:'<?=base_url()?>getChainage',
         method: 'post',
         data: {chainage_agr_loc_id:location_id, chainage_item_id:item_id},
         cache:false,
@@ -729,10 +764,12 @@ fetch(remoteimageurl).then(res => {
         uploader.style.width = percentage.toFixed(2)+'%';
         uploader.innerHTML = percentage.toFixed(2)+'%';
     return snapshot.ref.getDownloadURL()
- }).then(url => {
+ })
+ //Old Line
+ .then(url => {
    console.log("Firebase storage image uploaded : ", url);
           var data = $("#tripForm").serialize();
-data = data+"&in_image="+url;
+data = data + "&in_image=" + encodeURIComponent(url);
       console.log(url);
       console.log(data);
 
