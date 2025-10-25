@@ -21,15 +21,53 @@ $this->load->view("library/firebase_api");
 <!-- First, include the Webcam.js JavaScript Library -->
 <script type="text/javascript" src="<?php echo base_url() ?>public/webcam/webcam.min.js"></script>
 <style>
+/* Override admin template constraints for this page */
+.page-wrapper .container-fluid {
+    max-width: none !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+/* Force Bootstrap grid to work properly */
+.trip-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+}
+
+.trip-row > [class*="col-"] {
+    flex: 0 0 auto !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+/* Ensure main content and sidebar maintain their widths */
+.trip-main-col {
+    flex: 0 0 75% !important;
+    max-width: 75% !important;
+}
+
+.trip-sidebar-col {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+}
+
 /* Ensure images and canvases don't break layout */
 #snap, #canvas {
     max-width: 100% !important;
     height: auto !important;
 }
-/* Force layout to not wrap */
-.trip-row {
-    display: flex;
-    flex-wrap: nowrap !important;
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .trip-row {
+        flex-wrap: wrap !important;
+    }
+    .trip-main-col, .trip-sidebar-col {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
 }
 </style>
 <!--<script type="text/javascript" src="<?=base_url()?>public/html2canvas/html2canvas-master/dist/html2canvas.js"></script>-->
@@ -122,8 +160,8 @@ $this->load->view("library/firebase_api");
     </div>
     <!-- Modal -->
 
-    <div class="row no-gutters trip-row">
-        <div class="col-lg-9 col-md-8 pr-2">
+    <div class="trip-row">
+        <div class="trip-main-col">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -292,7 +330,7 @@ document.getElementById("snap").setAttribute(
         <!-- ============================================================== -->
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
-        <div class="col-lg-3 col-md-4 pl-2">
+        <div class="trip-sidebar-col">
             <div class="card" style="position: sticky; top: 20px; min-height: fit-content;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
