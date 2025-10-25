@@ -41,30 +41,60 @@ $this->load->view("library/firebase_api");
     height: auto !important;
 }
 
-/* Force proper Bootstrap behavior */
-.force-bootstrap .row {
+/* Force proper Bootstrap behavior - Ultimate Override */
+.force-bootstrap {
     display: flex !important;
     flex-wrap: wrap !important;
     margin-right: -15px !important;
     margin-left: -15px !important;
+    box-sizing: border-box !important;
 }
 
-.force-bootstrap .col-md-9 {
+.force-bootstrap > .col-md-9 {
     flex: 0 0 75% !important;
     max-width: 75% !important;
     position: relative !important;
     width: 100% !important;
     padding-right: 15px !important;
     padding-left: 15px !important;
+    box-sizing: border-box !important;
+    display: block !important;
 }
 
-.force-bootstrap .col-md-3 {
+.force-bootstrap > .col-md-3 {
     flex: 0 0 25% !important;
     max-width: 25% !important;
     position: relative !important;
     width: 100% !important;
     padding-right: 15px !important;
     padding-left: 15px !important;
+    box-sizing: border-box !important;
+    display: block !important;
+}
+
+/* Nuclear option - Override everything */
+.trip-layout-override {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+
+.trip-main-content {
+    flex: 0 0 75% !important;
+    max-width: 75% !important;
+    width: 75% !important;
+    float: left !important;
+    display: block !important;
+}
+
+.trip-sidebar-content {
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+    width: 25% !important;
+    float: right !important;
+    display: block !important;
 }
 </style>
 <!--<script type="text/javascript" src="<?=base_url()?>public/html2canvas/html2canvas-master/dist/html2canvas.js"></script>-->
@@ -157,8 +187,8 @@ $this->load->view("library/firebase_api");
     </div>
     <!-- Modal -->
 
-    <div class="row debug-border force-bootstrap">
-        <div class="col-md-9">
+    <div class="row debug-border force-bootstrap trip-layout-override">
+        <div class="col-md-9 trip-main-content">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -327,7 +357,7 @@ document.getElementById("snap").setAttribute(
         <!-- ============================================================== -->
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
-        <div class="col-md-3">
+        <div class="col-md-3 trip-sidebar-content">
             <div class="card" style="position: sticky; top: 20px; min-height: fit-content;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
