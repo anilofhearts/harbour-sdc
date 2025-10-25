@@ -304,7 +304,7 @@ class Section extends MY_Controller {
         }
         $this->form_validation->set_rules('agreement', 'Agreement', 'trim|required|callback_check_spaces_only');
         $this->form_validation->set_rules('amount', 'Amount', 'numeric|required');
-        $this->form_validation->set_rules('period_of_commencement', 'Period of Commencement', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
+        $this->form_validation->set_rules('period_of_commencement', 'Period of Commencement', 'trim|alpha_numeric_spaces|callback_check_spaces_only');
         $this->form_validation->set_rules('contractor_email_id', 'Email ID', 'valid_email|required');
         $this->form_validation->set_rules('name_of_contractor', 'Name of Contractor', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
 
