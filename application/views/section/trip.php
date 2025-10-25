@@ -21,19 +21,7 @@ $this->load->view("library/firebase_api");
 <!-- First, include the Webcam.js JavaScript Library -->
 <script type="text/javascript" src="<?php echo base_url() ?>public/webcam/webcam.min.js"></script>
 <style>
-/* DEBUG: Add borders to see what's happening */
-.debug-border .col-md-9 {
-    border: 3px solid red !important;
-    background-color: rgba(255,0,0,0.1) !important;
-}
-.debug-border .col-md-3 {
-    border: 3px solid blue !important;
-    background-color: rgba(0,0,255,0.1) !important;
-}
-.debug-border .row {
-    border: 2px solid green !important;
-    background-color: rgba(0,255,0,0.1) !important;
-}
+/* Layout fixed - debug borders removed */
 
 /* Ensure images and canvases don't break layout */
 #snap, #canvas {
@@ -41,60 +29,42 @@ $this->load->view("library/firebase_api");
     height: auto !important;
 }
 
-/* Force proper Bootstrap behavior - Ultimate Override */
-.force-bootstrap {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    margin-right: -15px !important;
-    margin-left: -15px !important;
-    box-sizing: border-box !important;
-}
-
-.force-bootstrap > .col-md-9 {
-    flex: 0 0 75% !important;
-    max-width: 75% !important;
-    position: relative !important;
-    width: 100% !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-    box-sizing: border-box !important;
-    display: block !important;
-}
-
-.force-bootstrap > .col-md-3 {
-    flex: 0 0 25% !important;
-    max-width: 25% !important;
-    position: relative !important;
-    width: 100% !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-    box-sizing: border-box !important;
-    display: block !important;
-}
-
-/* Nuclear option - Override everything */
+/* Optimized layout fix for trip page */
 .trip-layout-override {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: flex-start !important;
     width: 100% !important;
+    margin-left: -10px !important;
+    margin-right: -10px !important;
 }
 
 .trip-main-content {
     flex: 0 0 75% !important;
     max-width: 75% !important;
-    width: 75% !important;
-    float: left !important;
-    display: block !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    box-sizing: border-box !important;
 }
 
 .trip-sidebar-content {
     flex: 0 0 25% !important;
     max-width: 25% !important;
-    width: 25% !important;
-    float: right !important;
-    display: block !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    box-sizing: border-box !important;
+}
+
+/* Responsive behavior */
+@media (max-width: 767px) {
+    .trip-layout-override {
+        flex-direction: column !important;
+    }
+    .trip-main-content, .trip-sidebar-content {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
 }
 </style>
 <!--<script type="text/javascript" src="<?=base_url()?>public/html2canvas/html2canvas-master/dist/html2canvas.js"></script>-->
@@ -187,7 +157,7 @@ $this->load->view("library/firebase_api");
     </div>
     <!-- Modal -->
 
-    <div class="row debug-border force-bootstrap trip-layout-override">
+    <div class="row force-bootstrap trip-layout-override">
         <div class="col-md-9 trip-main-content">
             <div class="card">
                 <div class="card-body">
