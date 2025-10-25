@@ -316,19 +316,81 @@ class MY_Controller extends CI_Controller {
 
     public function stats($agreement_id)
     {
-        // $agreement_id = $this->manager->get_details('agreement', array('section_id'=>$this->user['section_id']))[0]->agreement_id;
-
+        // Initialize default values for incomplete agreements
         $data = array(
-            'ttlTrips' => $this->manager->count_data('trip', array('agreement_id'=>$agreement_id)),
-            'dailyTrips' => $this->manager->count_data('trip', array('agreement_id'=>$agreement_id, 'in_datetime >'=>date('Y-m-d'))),
-            'dailyVehicles' => $this->manager->count_distinct_where('trip', 'trip_vehicle_id', array('agreement_id' => $agreement_id, 'in_datetime >'=>date('Y-m-d'))),
-            'estimated_quantity' => $this->manager->get_sum('agreement_item', 'estimated_quantity', array('agreement_id'=>$agreement_id)),
-            //'dailyGrossWeight' => $this->manager->get_sum('trip', 'in_weight', array('agreement_id'=>$agreement_id, 'in_datetime>' => date('Y-m-d'))),
-            'dailyGrossWeight' => $this->manager->get_details('weight', array('agreement_id' => $agreement_id, 'in_datetime'=> date('Y-m-d'))),
-            'dailyItemWeight' => $this->manager->get_details('weight', array('agreement_id' => $agreement_id, 'in_datetime'=> date('Y-m-d'))),
-            'dailyNetWeight' => $this->manager->get_details('weight', array('agreement_id' => $agreement_id, 'in_datetime'=> date('Y-m-d'))),
-            'ttlNetWeight' => $this->manager->get_sum('weight', 'net_weight', array('agreement_id' => $agreement_id)),
+            'ttlTrips' => 0,
+            'dailyTrips' => 0,
+            'dailyVehicles' => 0,
+            'estimated_quantity' => 0,
+            'dailyGrossWeight' => array(),
+            'dailyItemWeight' => array(),
+            'dailyNetWeight' => array(),
+            'ttlNetWeight' => 0,
         );
+
+        try {
+            $data['ttlTrips'] = $this->manager->count_data('trip', array('agreement_id'=>$agreement_id));
+        } catch (Exception $e) {
+            log_message('error', 'Stats - ttlTrips error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['dailyTrips'] = $this->manager->count_data('trip', array('agreement_id'=>$agreement_id, 'in_datetime >'=>date('Y-m-d')));
+        } catch (Exception $e) {
+            log_message('error', 'Stats - dailyTrips error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['dailyVehicles'] = $this->manager->count_distinct_where('trip', 'trip_vehicle_id', array('agreement_id' => $agreement_id, 'in_datetime >'=>date('Y-m-d')));
+        } catch (Exception $e) {
+            log_message('error', 'Stats - dailyVehicles error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['estimated_quantity'] = $this->manager->get_sum('agreement_item', 'estimated_quantity', array('agreement_id'=>$agreement_id));
+            if (!$data['estimated_quantity']) {
+                $data['estimated_quantity'] = 0;
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Stats - estimated_quantity error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['dailyGrossWeight'] = $this->manager->get_details('weight', array('agreement_id' => $agreement_id, 'in_datetime'=> date('Y-m-d')));
+            if (!$data['dailyGrossWeight']) {
+                $data['dailyGrossWeight'] = array();
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Stats - dailyGrossWeight error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['dailyItemWeight'] = $this->manager->get_details('weight', array('agreement_id' => $agreement_id, 'in_datetime'=> date('Y-m-d')));
+            if (!$data['dailyItemWeight']) {
+                $data['dailyItemWeight'] = array();
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Stats - dailyItemWeight error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['dailyNetWeight'] = $this->manager->get_details('weight', array('agreement_id' => $agreement_id, 'in_datetime'=> date('Y-m-d')));
+            if (!$data['dailyNetWeight']) {
+                $data['dailyNetWeight'] = array();
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Stats - dailyNetWeight error: ' . $e->getMessage());
+        }
+
+        try {
+            $data['ttlNetWeight'] = $this->manager->get_sum('weight', 'net_weight', array('agreement_id' => $agreement_id));
+            if (!$data['ttlNetWeight']) {
+                $data['ttlNetWeight'] = 0;
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Stats - ttlNetWeight error: ' . $e->getMessage());
+        }
+
         return $data;
     }
 

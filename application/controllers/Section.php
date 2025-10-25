@@ -29,36 +29,82 @@ class Section extends MY_Controller {
             if ($agreement) {
                 log_message('debug', 'Section index - agreement found: ' . $agreement[0]->agreement_id);
                 
-                $chainage = $this->manager->get_chainage($agreement[0]->agreement_id);
-                $est_ttl_cost = $this->manager->est_ttl_cost($agreement[0]->agreement_id);
-                $ttl_exp = $this->manager->ttl_exp_fixed($agreement[0]->agreement_id);
-
-                if ($chainage) {
-                    foreach ($chainage as $cng) {
-                        $trip = $this->manager->get_details('trip', array(
-                            'agreement_location_id' => $cng->agreement_location_id,
-                            'agreement_item_id' => $cng->agreement_item_id,
-                            'onsite_chainage' => $cng->chainage
-                        ));
-
-                        $wt = 0;
-                        $net_weight = 0;
-                        if ($trip) {
-                            foreach ($trip as $tp) {
-                                $wt = ($tp->in_weight - $tp->out_weight) * (1 - $tp->onsite_loss / 100);
-                                $net_weight += $wt;
-                            }
-                        }
-
-                        $cng->dumped = $net_weight;
+                // Initialize default values for incomplete agreements
+                $chainage = array();
+                $est_ttl_cost = (object) array('ttl_cost' => 0);
+                $ttl_exp = (object) array('ttl_exp' => 0);
+                
+                try {
+                    $chainage = $this->manager->get_chainage($agreement[0]->agreement_id);
+                    if (!$chainage) {
+                        $chainage = array();
+                        log_message('debug', 'Section index - no chainage found for agreement');
                     }
+                } catch (Exception $e) {
+                    log_message('error', 'Section index - chainage error: ' . $e->getMessage());
+                    $chainage = array();
+                }
+                
+                try {
+                    $est_ttl_cost = $this->manager->est_ttl_cost($agreement[0]->agreement_id);
+                    if (!$est_ttl_cost || !isset($est_ttl_cost->ttl_cost)) {
+                        $est_ttl_cost = (object) array('ttl_cost' => 0);
+                        log_message('debug', 'Section index - no cost data found for agreement');
+                    }
+                } catch (Exception $e) {
+                    log_message('error', 'Section index - cost error: ' . $e->getMessage());
+                    $est_ttl_cost = (object) array('ttl_cost' => 0);
+                }
+                
+                try {
+                    $ttl_exp = $this->manager->ttl_exp_fixed($agreement[0]->agreement_id);
+                    if (!$ttl_exp || !isset($ttl_exp->ttl_exp)) {
+                        $ttl_exp = (object) array('ttl_exp' => 0);
+                        log_message('debug', 'Section index - no expense data found for agreement');
+                    }
+                } catch (Exception $e) {
+                    log_message('error', 'Section index - expense error: ' . $e->getMessage());
+                    $ttl_exp = (object) array('ttl_exp' => 0);
+                }
+
+                // Process chainage data if available
+                if ($chainage && is_array($chainage)) {
+                    foreach ($chainage as $cng) {
+                        try {
+                            $trip = $this->manager->get_details('trip', array(
+                                'agreement_location_id' => $cng->agreement_location_id,
+                                'agreement_item_id' => $cng->agreement_item_id,
+                                'onsite_chainage' => $cng->chainage
+                            ));
+
+                            $wt = 0;
+                            $net_weight = 0;
+                            if ($trip) {
+                                foreach ($trip as $tp) {
+                                    $wt = ($tp->in_weight - $tp->out_weight) * (1 - $tp->onsite_loss / 100);
+                                    $net_weight += $wt;
+                                }
+                            }
+
+                            $cng->dumped = $net_weight;
+                        } catch (Exception $e) {
+                            log_message('error', 'Section index - trip processing error: ' . $e->getMessage());
+                            $cng->dumped = 0;
+                        }
+                    }
+                }
+
+                // Calculate financial progress safely
+                $finprog = 0;
+                if ($est_ttl_cost->ttl_cost > 0) {
+                    $finprog = round(($ttl_exp->ttl_exp * 100) / $est_ttl_cost->ttl_cost, 2);
                 }
 
                 $data = array(
                     'role' => html_escape($_SESSION['harbour']['role_id']),
                     'agreement' => $agreement,
                     'chainage' => $chainage,
-                    'finprog' => round(($ttl_exp->ttl_exp * 100) / $est_ttl_cost->ttl_cost, 2),
+                    'finprog' => $finprog,
                     'stats' => $this->stats($agreement[0]->agreement_id)
                 );
                 
@@ -487,6 +533,95 @@ class Section extends MY_Controller {
         }
         
         echo "<h2>Debug Complete</h2>";
+    }
+
+    public function check_agreement_completeness($agreement_id = null)
+    {
+        if (!$agreement_id) {
+            $agreement = $this->manager->get_details('agreement', array('section_id' => $this->user['section_id'], 'date_of_completion' => null));
+            if ($agreement) {
+                $agreement_id = $agreement[0]->agreement_id;
+            } else {
+                echo "<h1>No Agreement Found</h1>";
+                return;
+            }
+        }
+
+        echo "<h1>Agreement Completeness Check</h1>";
+        echo "<p>Agreement ID: " . $agreement_id . "</p>";
+
+        // Check agreement basic info
+        echo "<h2>1. Agreement Basic Info</h2>";
+        $agreement = $this->manager->get_details('agreement', array('agreement_id' => $agreement_id));
+        if ($agreement) {
+            echo "✓ Agreement exists<br>";
+            echo "Amount: " . ($agreement[0]->amount ?? 'Not set') . "<br>";
+            echo "Date of Commencement: " . ($agreement[0]->date_of_commencement ?? 'Not set') . "<br>";
+        } else {
+            echo "✗ Agreement not found<br>";
+        }
+
+        // Check agreement locations
+        echo "<h2>2. Agreement Locations</h2>";
+        $locations = $this->manager->get_details('agreement_location', array('agreement_id' => $agreement_id));
+        if ($locations) {
+            echo "✓ " . count($locations) . " location(s) found<br>";
+        } else {
+            echo "✗ No locations found<br>";
+        }
+
+        // Check agreement items
+        echo "<h2>3. Agreement Items</h2>";
+        $items = $this->manager->get_details('agreement_item', array('agreement_id' => $agreement_id));
+        if ($items) {
+            echo "✓ " . count($items) . " item(s) found<br>";
+        } else {
+            echo "✗ No items found<br>";
+        }
+
+        // Check chainage
+        echo "<h2>4. Chainage Data</h2>";
+        $chainage = $this->manager->get_chainage($agreement_id);
+        if ($chainage) {
+            echo "✓ " . count($chainage) . " chainage record(s) found<br>";
+        } else {
+            echo "✗ No chainage data found<br>";
+        }
+
+        // Check vehicles
+        echo "<h2>5. Vehicles</h2>";
+        $vehicles = $this->manager->get_details('vehicle', array('vehicle_agreement_id' => $agreement_id));
+        if ($vehicles) {
+            echo "✓ " . count($vehicles) . " vehicle(s) found<br>";
+        } else {
+            echo "✗ No vehicles found<br>";
+        }
+
+        // Check trips
+        echo "<h2>6. Trips</h2>";
+        $trips = $this->manager->get_details('trip', array('agreement_id' => $agreement_id));
+        if ($trips) {
+            echo "✓ " . count($trips) . " trip(s) found<br>";
+        } else {
+            echo "✗ No trips found<br>";
+        }
+
+        echo "<h2>Summary</h2>";
+        $issues = array();
+        if (!$locations) $issues[] = "Missing locations";
+        if (!$items) $issues[] = "Missing items";
+        if (!$chainage) $issues[] = "Missing chainage data";
+        if (!$vehicles) $issues[] = "Missing vehicles";
+        if (!$trips) $issues[] = "No trips recorded";
+
+        if (empty($issues)) {
+            echo "✓ Agreement appears to be complete<br>";
+        } else {
+            echo "⚠ Issues found:<br>";
+            foreach ($issues as $issue) {
+                echo "- " . $issue . "<br>";
+            }
+        }
     }
 
     public function add_chainage()
