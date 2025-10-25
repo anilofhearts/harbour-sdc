@@ -273,10 +273,6 @@ document.getElementById("snap").setAttribute(
                         </div>
                     </div>
                     <?php echo form_close(); ?>
-                    <div class="row">
-
-
-                    </div>
                 </div>
             </div>
         </div>
