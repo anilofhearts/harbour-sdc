@@ -154,6 +154,15 @@ class Section extends MY_Controller {
                 'est_ttl_cost' => $this->manager->est_ttl_cost($agreement[0]->agreement_id),
                 'ttl_exp' => $this->manager->ttl_exp_fixed($agreement[0]->agreement_id)
             );
+            
+            // Ensure all data keys exist with default values
+            if (!isset($data['item_today'])) $data['item_today'] = array();
+            if (!isset($data['item_cum'])) $data['item_cum'] = array();
+            if (!isset($data['trips_today'])) $data['trips_today'] = 0;
+            if (!isset($data['trips_all'])) $data['trips_all'] = 0;
+            if (!isset($data['est_ttl'])) $data['est_ttl'] = 0;
+            if (!isset($data['est_ttl_cost'])) $data['est_ttl_cost'] = (object) array('ttl_cost' => 0);
+            if (!isset($data['ttl_exp'])) $data['ttl_exp'] = (object) array('ttl_exp' => 0);
         } else {
             redirect('agreement', 'refresh');
         }

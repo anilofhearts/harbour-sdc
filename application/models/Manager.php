@@ -666,8 +666,13 @@ $query = $this->db->get();
         FROM agreement
         WHERE agreement_id = $agreement_id
         ");
-    return $q->result()[0];
-    $q->free_result();
+    
+    if ($q->num_rows() > 0) {
+        return $q->result()[0];
+    }
+    
+    // Return default object if no data found
+    return (object) array('agreement_id' => $agreement_id, 'ttl_cost' => 0);
   }
 
   public function ttl_exp($agreement_id)
