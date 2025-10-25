@@ -43,6 +43,17 @@
 
               <?php echo form_open('section/addUpdateAgreement');?>
               <?=form_hidden('agreement_id',  ($editAgre) ? $editAgre[0]->agreement_id : '');?>
+              <?=form_hidden('section_id', $this->user['section_id']);?>
+              
+              <!-- Debug: Show form data -->
+              <?php if (ENVIRONMENT === 'development'): ?>
+              <div class="alert alert-info">
+                <h6>Debug Info:</h6>
+                <p>Edit Mode: <?= $editAgre ? 'Yes' : 'No' ?></p>
+                <p>Agreement ID: <?= ($editAgre) ? $editAgre[0]->agreement_id : 'New' ?></p>
+                <p>Section ID: <?= $this->user['section_id'] ?></p>
+              </div>
+              <?php endif; ?>
 
               <div class="card-body alert alert-success">
                 <div class="row">
@@ -309,6 +320,31 @@
   $(document).ready(function(){
 
     window.ttlAgr = parseFloat(document.getElementById('total').value);
+    
+    // Debug: Add form submission handler
+    $('form').on('submit', function(e) {
+        console.log('Form being submitted...');
+        console.log('Form action:', this.action);
+        console.log('Form method:', this.method);
+        
+        // Check if required fields are filled
+        var requiredFields = $(this).find('[required]');
+        var emptyFields = [];
+        requiredFields.each(function() {
+            if (!$(this).val()) {
+                emptyFields.push($(this).attr('name'));
+            }
+        });
+        
+        if (emptyFields.length > 0) {
+            console.log('Empty required fields:', emptyFields);
+            alert('Please fill in all required fields: ' + emptyFields.join(', '));
+            e.preventDefault();
+            return false;
+        }
+        
+        console.log('Form validation passed, submitting...');
+    });
     
   });
 

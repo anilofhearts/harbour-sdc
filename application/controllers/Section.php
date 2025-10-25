@@ -308,7 +308,12 @@ class Section extends MY_Controller {
         $this->form_validation->set_rules('contractor_email_id', 'Email ID', 'valid_email|required');
         $this->form_validation->set_rules('name_of_contractor', 'Name of Contractor', 'trim|required|alpha_numeric_spaces|callback_check_spaces_only');
 
+        // Debug: Log form submission
+        log_message('debug', 'Agreement form submitted - Validation running');
+        log_message('debug', 'POST data: ' . print_r($this->input->post(), TRUE));
+
         if ($this->form_validation->run() == TRUE) {
+            log_message('debug', 'Agreement form validation passed');
             $data = array(
                 'agreement' => html_escape($this->input->post('agreement', TRUE)),
                 'amount' => html_escape($this->input->post('amount', TRUE)),
@@ -388,15 +393,18 @@ class Section extends MY_Controller {
                 $q2 = $this->manager->insert_batch('agreement_location', $locations);
 
                 if (!$q1) {
+                    log_message('error', 'Failed to insert agreement items');
                     $this->session->set_flashdata('message', 'Failed to add/update items. Please try again.');
                     $this->session->set_flashdata('messageClass', 'alert-danger');
                     $this->agreementForm($agreement_id);
                     return;
                 }
                 if (!$q2) {
+                    log_message('error', 'Failed to insert agreement locations');
                     $this->session->set_flashdata('message', 'Failed to add/update locations. Please try again.');
                     $this->session->set_flashdata('messageClass', 'alert-danger');
-                    $this->agreementForm();
+                    $this->agreementForm($agreement_id);
+                    return;
                 }
 
                 $this->session->set_flashdata('message', 'Congratulation! Agreement added/updated successfully.');
@@ -408,7 +416,11 @@ class Section extends MY_Controller {
                 $this->agreementForm();
             }
         } else {
-            $this->agreementForm();
+            log_message('debug', 'Agreement form validation failed');
+            log_message('debug', 'Validation errors: ' . print_r($this->form_validation->error_array(), TRUE));
+            $this->session->set_flashdata('message', 'Please correct the errors below and try again.');
+            $this->session->set_flashdata('messageClass', 'alert-danger');
+            $this->agreementForm($agreement_id);
         }
     }
 
@@ -622,6 +634,64 @@ class Section extends MY_Controller {
                 echo "- " . $issue . "<br>";
             }
         }
+    }
+
+    public function test_agreement_save()
+    {
+        echo "<h1>Agreement Save Test</h1>";
+        
+        // Test 1: Check if form data is being received
+        echo "<h2>1. Form Data Test</h2>";
+        if ($this->input->post()) {
+            echo "✓ POST data received<br>";
+            echo "<pre>" . print_r($this->input->post(), TRUE) . "</pre>";
+        } else {
+            echo "✗ No POST data received<br>";
+        }
+        
+        // Test 2: Check session data
+        echo "<h2>2. Session Data Test</h2>";
+        if (isset($_SESSION['harbour'])) {
+            echo "✓ Session data available<br>";
+            echo "Section ID: " . $_SESSION['harbour']['section_id'] . "<br>";
+            echo "User ID: " . $_SESSION['harbour']['user_id'] . "<br>";
+        } else {
+            echo "✗ No session data<br>";
+        }
+        
+        // Test 3: Check database connection
+        echo "<h2>3. Database Test</h2>";
+        try {
+            $test_query = $this->db->query("SELECT 1 as test");
+            if ($test_query) {
+                echo "✓ Database connection working<br>";
+            }
+        } catch (Exception $e) {
+            echo "✗ Database error: " . $e->getMessage() . "<br>";
+        }
+        
+        // Test 4: Test form validation
+        echo "<h2>4. Form Validation Test</h2>";
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('test_field', 'Test Field', 'required');
+        
+        if ($this->form_validation->run() == TRUE) {
+            echo "✓ Form validation working<br>";
+        } else {
+            echo "✗ Form validation failed<br>";
+            echo "Errors: " . print_r($this->form_validation->error_array(), TRUE) . "<br>";
+        }
+        
+        // Test 5: Test manager model
+        echo "<h2>5. Manager Model Test</h2>";
+        if (isset($this->manager)) {
+            echo "✓ Manager model loaded<br>";
+        } else {
+            echo "✗ Manager model not loaded<br>";
+        }
+        
+        echo "<h2>Test Complete</h2>";
+        echo "<p><a href='" . base_url('section/agreementForm') . "'>Go to Agreement Form</a></p>";
     }
 
     public function add_chainage()
