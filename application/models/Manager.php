@@ -266,6 +266,9 @@ $query->free_result();
   public function get_trip_paginated($array, $page = 1)
   {
     $per_page = 50;
+    
+    // Ensure page is at least 1 and is a valid integer
+    $page = max(1, (int)$page);
     $offset = ($page - 1) * $per_page;
     
     $this->db->where($array);

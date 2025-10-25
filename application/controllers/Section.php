@@ -1065,7 +1065,9 @@ public function deleteWork($id = null)
             if($date_to) $fields['DATE(trip.in_datetime) <='] = $date_to;
 
             // Get paginated trips
-            $trip = $this->manager->get_trip_paginated($fields, $this->input->get('page', TRUE));
+            $page = $this->input->get('page', TRUE);
+            $page = $page ? (int)$page : 1; // Default to page 1 if not set
+            $trip = $this->manager->get_trip_paginated($fields, $page);
             
             // Get total count for pagination
             $total_trips = $this->manager->count_trips($fields);
