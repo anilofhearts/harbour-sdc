@@ -111,7 +111,8 @@ $this->load->view("library/firebase_api");
     <!-- Modal -->
 
     <div class="row">
-        <div class="col-lg-9 col-md-8">
+
+        <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -122,89 +123,98 @@ $this->load->view("library/firebase_api");
                     <?php endif;?>
 
 
-                    <!-- Form Trip Start -->
-                    <form id="tripForm">
+                    <div class="row">
+
+                        <div class="form-group col-lg-2.3">
+                          <label><span>Vehicle No</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-success" data-toggle="modal" data-target="#vehicleForm" style="cursor: pointer;"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add Vehicle"></i></span></label>
+
+                       <!-- Form Trip Start -->
+
+
+
+                            <form id="tripForm">
                         <?=form_hidden('agreement_id', $agreement[0]->agreement_id)?>
                         <input type="hidden" name="trip_type" id="trip_type" value="new">
                         <input type="hidden" name="trip_id" id="trip_id" value="">
 
-                        <!-- First Row: Vehicle, Location, Item, Chainage, Deduction, Save -->
-                        <div class="row">
-                            <div class="form-group col-lg-2">
-                                <label><span>Vehicle No</span>&nbsp;&nbsp;<span class="text-success" data-toggle="modal" data-target="#vehicleForm" style="cursor: pointer;"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add Vehicle"></i></span></label>
-                                <select name="trip_vehicle_id" id="trip_vehicle_id" onchange="getval(this.value)" class="form-control select2 custom-select" required="required">
-                                    <option value="">-- Select Vehicle --</option>
-                                    <?php foreach($vehicle as $vehicle): ?>
-                                        <option value="<?=$vehicle->vehicle_id?>" ><?=$vehicle->vehicle_no?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <?php echo form_label('Location') ?>
-                                <select name="agreement_location_id" id="location" class="form-control" onchange="getchainage()">
-                                    <option>-- Select Location --</option>
-                                    <?php foreach($location as $loc): ?>
-                                        <option value="<?=$loc->agreement_location_id?>"><?=$loc->location?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <?php echo form_label('Item Name')?>
-                                <select name="agreement_item_id" id="item" class="form-control" onchange="getchainage()">
-                                    <option>-- Select Item --</option>
-                                    <?php foreach($item as $itm): ?>
-                                        <option value="<?=$itm->agreement_item_id?>"><?=$itm->item?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <?php echo form_error('agreement_item_id', '<p class="text-danger">', '</p>'); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <?php echo form_label('Chainage') ?>
-                                <select name="onsite_chainage" id="onsite_chainage" class="form-control">
-                                    <option value="">-</option>
-                                    <?php foreach ($chainage as $chn) { ?>
-                                        <option value="<?=$chn->chainage?>"><?=$chn->chainage?></option>
-                                    <?php } ?>
-                                </select>
-                                <?php echo form_error('onsite_chainage', '<p class="text-danger">', '</p>'); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <?php echo form_label('Deduction(%)') ?>
-                                <?php echo form_input(array('name' => 'onsite_loss', 'value'=>'', 'id'=>'onsite_loss', 'disabled'=>'disabled', 'placeholder' => 'Deduction', 'class'=>'form-control'), set_value('onsite_loss')); ?>
-                                <?php echo form_error('onsite_loss', '<p class="text-danger">', '</p>'); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <label>&nbsp;</label>
-                                <button type="button" id='saver' class="btn btn-primary btn-block" onclick="submitit()">Save</button>
-                            </div>
+                          <select name="trip_vehicle_id" id="trip_vehicle_id" onchange="getval(this.value)" class="form-control select2 custom-select" required="required">
+                            <option value="">-- Select Vehicle --</option>
+                              <?php foreach($vehicle as $vehicle): ?>
+                                <option value="<?=$vehicle->vehicle_id?>" ><?=$vehicle->vehicle_no?></option>
+                              <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-3">
+                            <?php echo form_label('Location') ?>
+                            <select name="agreement_location_id" id="location" class="form-control" onchange="getchainage()">
+
+                                <?php foreach($location as $loc): ?>
+                                <option>-- Select Location --</option>
+                                    <option value="<?=$loc->agreement_location_id?>"><?=$loc->location?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-2">
+                          <?php echo form_label('Item Name')?>
+                          <select name="agreement_item_id" id="item" class="form-control" onchange="getchainage()">
+                                <option>-- Select Item --</option>
+                                <?php foreach($item as $itm): ?>
+
+                                    <option value="<?=$itm->agreement_item_id?>"><?=$itm->item?></option>
+                                <?php endforeach; ?>
+                            </select>
+                          <?php echo form_error('agreement_item_id', '<p class="text-danger">', '</p>'); ?>
+                        </div>
+                        <div class="form-group col-lg-2">
+                            <?php echo form_label('Chainage') ?>
+
+                            <select name="onsite_chainage" id="onsite_chainage" class="form-control">
+                                <option value="">-</option>
+
+                                <?php foreach ($chainage as $chn) { ?>
+
+                                    <option value="<?=$chn->chainage?>"><?=$chn->chainage?></option>
+                                <?php } ?>
+                            </select>
+                            <?php //echo form_input(array('name' => 'onsite_chainage', 'value'=>($editTrip) ? $editTrip[0]->onsite_chainage : '', 'id'=>'onsite_chainage', 'disabled'=>'disabled', 'placeholder' => 'Chainage', 'class'=>'form-control'), set_value('onsite_chainage')); ?>
+                            <?php echo form_error('onsite_chainage', '<p class="text-danger">', '</p>'); ?>
                         </div>
 
-                        <!-- Second Row: Contractor, Trip No, Card No, Date & Time -->
-                        <div class="row">
-                            <div class="form-group col-lg-4">
-                                <?php echo form_label('Contractor\'s Name') ?>
-                                <?php echo form_input(array('name' => 'contractor_name', 'value'=>$agreement[0]->name_of_contractor, 'disabled'=>'', 'class'=>'form-control')); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <?php echo form_label('Trip No'); ?>
-                                <?php echo form_input(array('name' => 'trip_no', 'id'=>'trip_no', 'value'=>'', 'readonly'=>'readonly', 'class'=>'form-control')); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-2">
-                                <?php echo form_label('Card No') ?>
-                                <?php echo form_input(array('name' => 'card_no', 'id'=>'card_no', 'value'=>'', 'readonly'=>'readonly', 'class'=>'form-control')); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-4">
-                                <?php echo form_label('Date & Time') ?>
-                                <?php echo form_input(array('name' => 'datetime', 'id'=>'datetime', 'value'=>date('d-m-Y H:i:s'), 'readonly'=>'', 'class'=>'form-control'), set_value('datetime')); ?>
-                            </div>
+                        <div class="form-group col-lg-1">
+                            <?php echo form_label('Deduction(%)') ?>
+                            <?php echo form_input(array('name' => 'onsite_loss', 'value'=>'', 'id'=>'onsite_loss', 'disabled'=>'disabled', 'placeholder' => 'Deduction', 'class'=>'form-control'), set_value('onsite_loss')); ?>
+                            <?php echo form_error('onsite_loss', '<p class="text-danger">', '</p>'); ?>
+                        </div>
+
+                        <div class="form-group col-lg-1">
+                            <?php echo form_label('. ') ?>
+
+                            <button type="button" id='saver' class="btn btn-primary" onclick="submitit()">Save</button>
+                        </div>
+                        <!-- <div class="form-group col-lg-3">
+                            <?php echo form_label('Quarry') ?>
+                            <select name="trip_quarry_id" id="trip_quarry_id" class="form-control">
+                                <?php foreach($quarries as $quarry): ?>
+                                    <option value="<?=$quarry->vehicle_quarry_id?>"><?=$quarry->location?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div> -->
+                        <div class="form-group col-lg-3">
+                            <?php echo form_label('Contractor\'s Name') ?>
+                            <?php echo form_input(array('name' => 'contractor_name', 'value'=>$agreement[0]->name_of_contractor, 'disabled'=>'', 'class'=>'form-control')); ?>
+                        </div>
+                        <div class="form-group col-lg-2">
+                            <?php echo form_label('Trip No'); ?>
+                            <?php echo form_input(array('name' => 'trip_no', 'id'=>'trip_no', 'value'=>'', 'readonly'=>'readonly', 'class'=>'form-control')); ?>
+                        </div>
+                        <div class="form-group col-lg-2">
+                            <?php echo form_label('Card No') ?>
+                            <?php echo form_input(array('name' => 'card_no', 'id'=>'card_no', 'value'=>'', 'readonly'=>'readonly', 'class'=>'form-control')); ?>
+                        </div>
+                        <?php $cur = date('d-m-Y H:i:s'); ?>
+                        <div class="form-group col-lg-3">
+                            <?php echo form_label('Date & Time') ?>
+                            <?php echo form_input(array('name' => 'datetime', 'id'=>'datetime', 'value'=>date('d-m-Y H:i:s'), 'readonly'=>'', 'class'=>'form-control'), set_value('datetime')); ?>
                         </div>
                         <!--
                         <div class="form-group col-lg-3">
@@ -280,12 +290,16 @@ document.getElementById("snap").setAttribute(
                 </div>
             </div>
         </div>
-        
-        <!-- ============================================================== -->
-        <!-- DAILY REPORT - RIGHT SIDE -->
-        <!-- ============================================================== -->
-        <div class="col-lg-3 col-md-4">
-            <div class="card" style="position: sticky; top: 20px;">
+    <!-- ============================================================== -->
+    <!-- FORM BLOCK -->
+    <!-- ============================================================== -->
+
+    <!-- ============================================================== -->
+    <!-- DAILY REPORT -->
+    <!-- ============================================================== -->
+        <div class="col-md-3">
+
+            <div class="card">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
                     <div class="row">
@@ -355,7 +369,13 @@ document.getElementById("snap").setAttribute(
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+
+        </div>
     </div>
+    <!-- ============================================================== -->
+    <!-- FORM BLOCK -->
+    <!-- ============================================================== -->
     <!-- ============================================================== -->
     <!-- TABLE REPORT -->
     <!-- ============================================================== -->
