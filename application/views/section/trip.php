@@ -111,7 +111,7 @@ $this->load->view("library/firebase_api");
     <!-- Modal -->
 
     <div class="row">
-        <div class="col-lg-8 col-md-7">
+        <div class="col-lg-9 col-md-8">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -284,7 +284,7 @@ document.getElementById("snap").setAttribute(
         <!-- ============================================================== -->
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
-        <div class="col-lg-4 col-md-5">
+        <div class="col-lg-3 col-md-4">
             <div class="card" style="position: sticky; top: 20px;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
