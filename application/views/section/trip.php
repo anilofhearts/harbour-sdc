@@ -21,13 +21,15 @@ $this->load->view("library/firebase_api");
 <!-- First, include the Webcam.js JavaScript Library -->
 <script type="text/javascript" src="<?php echo base_url() ?>public/webcam/webcam.min.js"></script>
 <style>
-@media (max-width: 768px) {
-    .trip-main-content { order: 2; }
-    .trip-sidebar { order: 1; margin-bottom: 20px; }
+/* Ensure images and canvases don't break layout */
+#snap, #canvas {
+    max-width: 100% !important;
+    height: auto !important;
 }
-@media (min-width: 769px) {
-    .trip-main-content { flex: 0 0 auto; }
-    .trip-sidebar { flex: 0 0 auto; }
+/* Force layout to not wrap */
+.trip-row {
+    display: flex;
+    flex-wrap: nowrap !important;
 }
 </style>
 <!--<script type="text/javascript" src="<?=base_url()?>public/html2canvas/html2canvas-master/dist/html2canvas.js"></script>-->
@@ -120,8 +122,8 @@ $this->load->view("library/firebase_api");
     </div>
     <!-- Modal -->
 
-    <div class="row no-gutters d-flex">
-        <div class="col-xl-9 col-lg-8 col-md-7 pr-2 trip-main-content">
+    <div class="row no-gutters trip-row">
+        <div class="col-lg-9 col-md-8 pr-2">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -232,7 +234,7 @@ $this->load->view("library/firebase_api");
 
                     <div class="row">
 
-                        <div class="streambox col-md-6" id="streambox" style="text-align: center;"> Live Stream <br>
+                        <div class="streambox col-6" id="streambox" style="text-align: center;"> Live Stream <br>
 
                         <img id="snap"  class="img-thumbnail" crossOrigin=Anonymous/>
                         <div class="progress" style="height:20px;">
@@ -270,11 +272,11 @@ document.getElementById("snap").setAttribute(
 
                             <!--<div id="my_camera"></div>
                             <div hidden="hidden" id="results"></div>-->
-                            <canvas id="canvas" width="320" height="240"></canvas>
+                            <canvas id="canvas" width="320" height="240" style="max-width: 100%; height: auto;"></canvas>
                             <input id="mydata" type="hidden" name="mydata" value=""/>
                         </div>
 
-                        <div class="col-md-6 align-middle" style="text-align: center;"> <label id="wtlabel" style="font-size: 24px;">Gross Weight</label>
+                        <div class="col-6 align-middle" style="text-align: center;"> <label id="wtlabel" style="font-size: 24px;">Gross Weight</label>
                             <h1><span id="weight_1" class="badge badge-pill badge-success weight">0</span></h1>
                             <input  type="hidden" id="weight_com2" name="weight2" />
                             <input  id="weight" name="weight" readonly='readonly'/>
@@ -290,7 +292,7 @@ document.getElementById("snap").setAttribute(
         <!-- ============================================================== -->
         <!-- DAILY REPORT - RIGHT SIDE -->
         <!-- ============================================================== -->
-        <div class="col-xl-3 col-lg-4 col-md-5 pl-2 trip-sidebar">
+        <div class="col-lg-3 col-md-4 pl-2">
             <div class="card" style="position: sticky; top: 20px; min-height: fit-content;">
                 <div class="card-body">
                     <h4 class="card-title text-center"><?=date('d-m-Y')?></h4>
